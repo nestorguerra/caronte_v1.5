@@ -306,9 +306,9 @@
             // Añadir sprites (árboles, etc.)
             addScenery();
 
-            // Línea de meta
-            segments[0].color = COLORS.START;
-            segments[1].color = COLORS.START;
+            // Línea de meta (patrón de cuadros)
+            segments[0].isStart = true;
+            segments[1].isStart = true;
         }
 
         function addRoad(enter, hold, leave, curve, hill) {
@@ -538,6 +538,7 @@
 
                 // Sombra
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                ctx.beginPath();
                 ctx.ellipse(x + carWidth / 2, y + carHeight + 5 * scale, carWidth / 2, 10 * scale, 0, 0, Math.PI * 2);
                 ctx.fill();
 
@@ -802,7 +803,13 @@
                 const rumbleColor = Math.floor(segmentIndex / RUMBLE_LENGTH) % 2 ? COLORS.RUMBLE.light : COLORS.RUMBLE.dark;
                 const laneColor = Math.floor(segmentIndex / RUMBLE_LENGTH) % 2 ? COLORS.LANE : null;
 
-                const segmentColor = segment.color || (Math.floor(segmentIndex / RUMBLE_LENGTH) % 2 ? COLORS.ROAD.light : COLORS.ROAD.dark);
+                // Color de la carretera (especial para línea de meta)
+                let segmentColor;
+                if (segment.isStart) {
+                    segmentColor = Math.floor(segmentIndex) % 2 ? '#ffffff' : '#000000';
+                } else {
+                    segmentColor = Math.floor(segmentIndex / RUMBLE_LENGTH) % 2 ? COLORS.ROAD.light : COLORS.ROAD.dark;
+                }
 
                 drawSegment(
                     segment.p1.screen.x, segment.p1.screen.y, segment.p1.screen.w,
