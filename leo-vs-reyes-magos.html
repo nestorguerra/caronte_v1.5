@@ -85,7 +85,7 @@
 
         .king-icon:nth-child(1) { background: #ff6b6b; animation-delay: 0s; }
         .king-icon:nth-child(2) { background: #4ecdc4; animation-delay: 0.1s; }
-        .king-icon:nth-child(3) { background: #ffe66d; animation-delay: 0.2s; }
+        .king-icon:nth-child(3) { background: #9b59b6; animation-delay: 0.2s; }
 
         @keyframes bounce {
             from { transform: translateY(0); }
@@ -296,7 +296,12 @@
         let score = 0;
         let lives = 3;
         let level = 1;
-        let highScore = localStorage.getItem('leoKingsHighScore') || 0;
+        let highScore = parseInt(localStorage.getItem('leoKingsHighScore')) || 0;
+        // Validar high score (resetear si está corrupto)
+        if (isNaN(highScore) || highScore > 999999 || highScore < 0) {
+            highScore = 0;
+            localStorage.setItem('leoKingsHighScore', 0);
+        }
         document.getElementById('highScore').textContent = highScore;
 
         // Audio
@@ -393,11 +398,11 @@
             speed: 0.12
         };
 
-        // Reyes Magos (fantasmas)
+        // Reyes Magos (fantasmas) - 3 Reyes con colores distintos
         const kings = [
             { name: 'Melchor', color: '#ff6b6b', x: 9, y: 10, targetX: 9, targetY: 10, direction: 'left', scared: false, eaten: false, speed: 0.08 },
             { name: 'Gaspar', color: '#4ecdc4', x: 10, y: 10, targetX: 10, targetY: 10, direction: 'up', scared: false, eaten: false, speed: 0.08 },
-            { name: 'Baltasar', color: '#ffe66d', x: 10, y: 9, targetX: 10, targetY: 9, direction: 'right', scared: false, eaten: false, speed: 0.08 }
+            { name: 'Baltasar', color: '#9b59b6', x: 11, y: 10, targetX: 11, targetY: 10, direction: 'right', scared: false, eaten: false, speed: 0.08 }
         ];
 
         let powerMode = false;
@@ -450,7 +455,7 @@
 
             kings[0].x = 9; kings[0].y = 10; kings[0].targetX = 9; kings[0].targetY = 10;
             kings[1].x = 10; kings[1].y = 10; kings[1].targetX = 10; kings[1].targetY = 10;
-            kings[2].x = 10; kings[2].y = 9; kings[2].targetX = 10; kings[2].targetY = 9;
+            kings[2].x = 11; kings[2].y = 10; kings[2].targetX = 11; kings[2].targetY = 10;
 
             kings.forEach(k => {
                 k.scared = false;
@@ -509,10 +514,6 @@
                         ctx.beginPath();
                         ctx.arc(px + TILE_SIZE/2 - 3, py + TILE_SIZE/2 - 3, 4 * pulse, 0, Math.PI * 2);
                         ctx.fill();
-
-                        // Emoji
-                        ctx.font = '14px Arial';
-                        ctx.fillText('ite', px + 5, py + 20);
                     }
                 }
             }
