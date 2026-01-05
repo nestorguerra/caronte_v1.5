@@ -356,10 +356,10 @@
             }
         }
 
-        // Mapa: 0=vacío, 1=muro, 2=regalo, 3=carbón(power), 4=portal
+        // Mapa: 0=vacío, 1=muro, 2=regalo, 3=carbón(power), 4=caja de juguetes
         const mapTemplate = [
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,1],
+            [1,4,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,4,1],
             [1,2,1,1,2,1,1,1,2,1,1,2,1,1,1,2,1,1,2,1],
             [1,3,1,1,2,1,1,1,2,1,1,2,1,1,1,2,1,1,3,1],
             [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
@@ -368,23 +368,58 @@
             [1,1,1,1,2,1,1,1,0,1,1,0,1,1,1,2,1,1,1,1],
             [0,0,0,1,2,1,0,0,0,0,0,0,0,0,1,2,1,0,0,0],
             [1,1,1,1,2,1,0,1,1,0,0,1,1,0,1,2,1,1,1,1],
-            [4,0,0,0,2,0,0,1,0,0,0,0,1,0,0,2,0,0,0,4],
+            [0,0,0,0,2,0,0,1,0,0,0,0,1,0,0,2,0,0,0,0],
             [1,1,1,1,2,1,0,1,1,1,1,1,1,0,1,2,1,1,1,1],
             [0,0,0,1,2,1,0,0,0,0,0,0,0,0,1,2,1,0,0,0],
             [1,1,1,1,2,1,0,1,1,1,1,1,1,0,1,2,1,1,1,1],
             [1,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,1],
             [1,2,1,1,2,1,1,1,2,1,1,2,1,1,1,2,1,1,2,1],
-            [1,3,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1,2,3,1],
+            [1,3,2,1,2,2,2,4,2,2,2,2,4,2,2,2,1,2,3,1],
             [1,1,2,1,2,1,2,1,1,1,1,1,1,2,1,2,1,2,1,1],
             [1,2,2,2,2,1,2,2,2,1,1,2,2,2,1,2,2,2,2,1],
             [1,2,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,2,1],
-            [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,4,1],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         ];
 
         let map = [];
         let totalDots = 0;
         let dotsEaten = 0;
+
+        // Puntuaciones flotantes
+        let floatingScores = [];
+
+        function showFloatingScore(x, y, text) {
+            floatingScores.push({
+                x: x,
+                y: y,
+                text: text,
+                life: 60, // 1 segundo a 60fps
+                vy: -2
+            });
+        }
+
+        function updateFloatingScores() {
+            floatingScores = floatingScores.filter(fs => {
+                fs.y += fs.vy;
+                fs.life--;
+                return fs.life > 0;
+            });
+        }
+
+        function drawFloatingScores() {
+            floatingScores.forEach(fs => {
+                const alpha = fs.life / 60;
+                ctx.fillStyle = `rgba(255, 215, 0, ${alpha})`;
+                ctx.font = 'bold 16px "Press Start 2P"';
+                ctx.textAlign = 'center';
+                ctx.fillText(fs.text, fs.x, fs.y);
+
+                // Sombra
+                ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.5})`;
+                ctx.fillText(fs.text, fs.x + 2, fs.y + 2);
+            });
+        }
 
         // Leo (jugador)
         const leo = {
@@ -440,7 +475,8 @@
                 map[y] = [];
                 for (let x = 0; x < COLS; x++) {
                     map[y][x] = mapTemplate[y][x];
-                    if (map[y][x] === 2 || map[y][x] === 3) {
+                    // Contar todos los coleccionables: regalos(2), carbón(3) y cajas(4)
+                    if (map[y][x] === 2 || map[y][x] === 3 || map[y][x] === 4) {
                         totalDots++;
                     }
                 }
@@ -513,6 +549,61 @@
                         ctx.fillStyle = 'rgba(255, 100, 100, 0.5)';
                         ctx.beginPath();
                         ctx.arc(px + TILE_SIZE/2 - 3, py + TILE_SIZE/2 - 3, 4 * pulse, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (tile === 4) {
+                        // Caja de juguetes
+                        const bounce = Math.sin(Date.now() / 200 + x * 2) * 2;
+                        const cx = px + TILE_SIZE/2;
+                        const cy = py + TILE_SIZE/2 + bounce;
+
+                        // Sombra
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                        ctx.fillRect(cx - 10, cy + 8, 20, 4);
+
+                        // Caja base (marrón)
+                        ctx.fillStyle = '#8b4513';
+                        ctx.fillRect(cx - 10, cy - 6, 20, 14);
+
+                        // Tapa de la caja
+                        ctx.fillStyle = '#a0522d';
+                        ctx.fillRect(cx - 11, cy - 9, 22, 5);
+
+                        // Decoración de la caja (líneas)
+                        ctx.fillStyle = '#654321';
+                        ctx.fillRect(cx - 1, cy - 6, 2, 14);
+
+                        // Juguetes asomando
+                        // Pelota roja
+                        ctx.fillStyle = '#ff4444';
+                        ctx.beginPath();
+                        ctx.arc(cx - 5, cy - 10, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#ff8888';
+                        ctx.beginPath();
+                        ctx.arc(cx - 6, cy - 11, 1.5, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Estrella amarilla
+                        ctx.fillStyle = '#ffd700';
+                        ctx.beginPath();
+                        ctx.moveTo(cx + 5, cy - 14);
+                        ctx.lineTo(cx + 6, cy - 10);
+                        ctx.lineTo(cx + 9, cy - 10);
+                        ctx.lineTo(cx + 7, cy - 8);
+                        ctx.lineTo(cx + 8, cy - 5);
+                        ctx.lineTo(cx + 5, cy - 7);
+                        ctx.lineTo(cx + 2, cy - 5);
+                        ctx.lineTo(cx + 3, cy - 8);
+                        ctx.lineTo(cx + 1, cy - 10);
+                        ctx.lineTo(cx + 4, cy - 10);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        // Brillo animado
+                        const sparkle = Math.sin(Date.now() / 100) * 0.5 + 0.5;
+                        ctx.fillStyle = `rgba(255, 255, 255, ${sparkle * 0.8})`;
+                        ctx.beginPath();
+                        ctx.arc(cx + 6, cy - 4, 2, 0, Math.PI * 2);
                         ctx.fill();
                     }
                 }
@@ -1009,6 +1100,15 @@
                     ghostEatBonus = 200;
                     kings.forEach(k => k.scared = true);
                     playSound('power');
+                } else if (tile === 4) {
+                    // Caja de juguetes - premio especial!
+                    map[tileY][tileX] = 0;
+                    score += 75;
+                    dotsEaten++;
+                    playSound('power');
+
+                    // Efecto visual de puntos flotantes
+                    showFloatingScore(tileX * TILE_SIZE + TILE_SIZE/2, tileY * TILE_SIZE, '+75');
                 }
             }
 
@@ -1392,12 +1492,14 @@
             updateLeo();
             updateKings();
             updateBonus();
+            updateFloatingScores();
 
             // Draw
             drawMap();
             drawBonus();
             kings.forEach(drawKing);
             drawLeo();
+            drawFloatingScores();
 
             requestAnimationFrame(gameLoop);
         }
