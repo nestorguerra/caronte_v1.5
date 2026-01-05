@@ -408,38 +408,50 @@
 
         // Dibujar fondo (cielo y montañas)
         function drawBackground() {
-            // Cielo degradado
-            const gradient = ctx.createLinearGradient(0, 0, 0, HEIGHT / 2);
-            gradient.addColorStop(0, COLORS.SKY.top);
-            gradient.addColorStop(1, COLORS.SKY.bottom);
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, WIDTH, HEIGHT / 2);
+            try {
+                // Cielo - parte superior
+                ctx.fillStyle = '#0066cc';
+                ctx.fillRect(0, 0, WIDTH, HEIGHT / 3);
 
-            // Sol
-            ctx.fillStyle = '#ffdd00';
-            ctx.beginPath();
-            ctx.arc(650, 80, 40, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#ffff88';
-            ctx.beginPath();
-            ctx.arc(650, 80, 30, 0, Math.PI * 2);
-            ctx.fill();
+                // Cielo - parte inferior
+                ctx.fillStyle = '#87ceeb';
+                ctx.fillRect(0, HEIGHT / 3, WIDTH, HEIGHT / 6);
 
-            // Montañas
-            ctx.fillStyle = '#4a6741';
-            ctx.beginPath();
-            ctx.moveTo(0, HEIGHT / 2);
-            for (let x = 0; x <= WIDTH; x += 50) {
-                const h = 50 + Math.sin(x * 0.02) * 30 + Math.sin(x * 0.01) * 50;
-                ctx.lineTo(x, HEIGHT / 2 - h);
+                // Sol
+                ctx.fillStyle = '#ffdd00';
+                ctx.beginPath();
+                ctx.arc(650, 80, 40, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Montañas
+                ctx.fillStyle = '#4a6741';
+                ctx.beginPath();
+                ctx.moveTo(0, HEIGHT / 2);
+                ctx.lineTo(100, HEIGHT / 2 - 80);
+                ctx.lineTo(200, HEIGHT / 2 - 50);
+                ctx.lineTo(300, HEIGHT / 2 - 100);
+                ctx.lineTo(400, HEIGHT / 2 - 60);
+                ctx.lineTo(500, HEIGHT / 2 - 90);
+                ctx.lineTo(600, HEIGHT / 2 - 70);
+                ctx.lineTo(700, HEIGHT / 2 - 85);
+                ctx.lineTo(800, HEIGHT / 2 - 55);
+                ctx.lineTo(WIDTH, HEIGHT / 2);
+                ctx.closePath();
+                ctx.fill();
+
+                // Mar
+                ctx.fillStyle = '#0088cc';
+                ctx.fillRect(0, HEIGHT / 2 - 15, WIDTH, 25);
+
+                // Hierba base
+                ctx.fillStyle = '#228b22';
+                ctx.fillRect(0, HEIGHT / 2, WIDTH, HEIGHT / 2);
+
+            } catch (e) {
+                console.error('Error en drawBackground:', e);
+                ctx.fillStyle = '#ff0000';
+                ctx.fillRect(0, 0, WIDTH, HEIGHT);
             }
-            ctx.lineTo(WIDTH, HEIGHT / 2);
-            ctx.closePath();
-            ctx.fill();
-
-            // Mar en el horizonte
-            ctx.fillStyle = '#0088cc';
-            ctx.fillRect(0, HEIGHT / 2 - 20, WIDTH, 30);
         }
 
         // Dibujar segmento de carretera
