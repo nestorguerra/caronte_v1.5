@@ -761,17 +761,35 @@
 
         // Encontrar segmento por posición Z
         function findSegment(z) {
-            return segments[Math.floor(z / SEGMENT_LENGTH) % segments.length];
+            if (segments.length === 0) return null;
+            const index = Math.floor(z / SEGMENT_LENGTH) % segments.length;
+            return segments[index < 0 ? segments.length + index : index];
         }
 
         // Renderizar
         function render() {
+            // Limpiar canvas
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
             // Fondo
             drawBackground();
 
+            // Verificar que hay segmentos
+            if (segments.length === 0) {
+                ctx.fillStyle = '#ff0000';
+                ctx.font = '20px Arial';
+                ctx.fillText('ERROR: No hay segmentos - ' + trackLength, 100, 300);
+                return;
+            }
+
             const baseSegment = findSegment(player.z);
+            if (!baseSegment) return;
+
             const basePercent = (player.z % SEGMENT_LENGTH) / SEGMENT_LENGTH;
             const playerSegment = findSegment(player.z + CAMERA_HEIGHT);
+            if (!playerSegment) return;
+
             const playerY = playerSegment.p1.world.y + (playerSegment.p2.world.y - playerSegment.p1.world.y) * basePercent;
             let maxY = HEIGHT;
 
@@ -1017,17 +1035,21 @@
         function gameLoop(currentTime = 0) {
             if (gameState !== 'playing') return;
 
-            const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
-            lastTime = currentTime;
+            try {
+                const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
+                lastTime = currentTime;
 
-            raceTime += dt;
-            lapTime += dt;
+                raceTime += dt;
+                lapTime += dt;
 
-            updatePlayer(dt);
-            updateCars(dt);
-            checkCollisions();
-            render();
-            updateHUD();
+                updatePlayer(dt);
+                updateCars(dt);
+                checkCollisions();
+                render();
+                updateHUD();
+            } catch (error) {
+                console.error('Error en gameLoop:', error);
+            }
 
             requestAnimationFrame(gameLoop);
         }
