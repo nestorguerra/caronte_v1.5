@@ -237,9 +237,9 @@
             x: 0,
             z: 0,
             speed: 0,
-            maxSpeed: 180,           // Velocidad moderada para control total
-            accel: 0.5,              // Buena aceleración
-            brake: 0.6,
+            maxSpeed: 240,           // Velocidad máxima 240 km/h
+            accel: 0.6,              // Buena aceleración
+            brake: 0.8,
             decel: 0.15,
             turbo: false,
             turboFuel: 100
@@ -263,39 +263,46 @@
             START: { light: '#ffffff', dark: '#000000' }
         };
 
-        // Crear circuito (MUY FÁCIL - curvas muy suaves)
+        // Crear circuito (EMOCIONANTE - curvas difíciles pero jugable)
         function createTrack() {
             segments = [];
 
-            // Sección de inicio - recta muy larga
-            addRoad(100, 100, 100, 0, 0);
+            // Sección de inicio - recta para coger velocidad
+            addRoad(80, 80, 80, 0, 0);
 
-            // Curva MUY suave a la derecha
-            addRoad(80, 80, 80, 0.5, 0);
+            // Primera curva difícil a la derecha
+            addRoad(40, 50, 40, 3, 0);
 
-            // Recta con pequeña subida
-            addRoad(80, 80, 80, 0, 10);
+            // Recta corta
+            addRoad(50, 50, 50, 0, 0);
+
+            // Curva cerrada a la izquierda con subida
+            addRoad(35, 45, 35, -3.5, 25);
 
             // Recta en la colina
-            addRoad(60, 60, 60, 0, 5);
+            addRoad(60, 60, 60, 0, 10);
 
-            // Bajada suave
-            addRoad(80, 80, 80, 0.3, -15);
+            // Bajada con curva a la derecha
+            addRoad(40, 50, 40, 2.5, -30);
 
-            // Curva suave a la izquierda
-            addRoad(70, 70, 70, -0.5, 0);
+            // Chicane (curva S)
+            addRoad(30, 30, 30, -3, 0);
+            addRoad(30, 30, 30, 3, 0);
 
-            // Recta muy larga
-            addRoad(150, 150, 150, 0, 0);
-
-            // Curva suave
-            addRoad(60, 60, 60, -0.4, 0);
-
-            // Bajada final
-            addRoad(80, 80, 80, 0.3, -10);
-
-            // Recta de meta muy larga
+            // Recta larga para recuperar
             addRoad(100, 100, 100, 0, 0);
+
+            // Curva muy cerrada a la izquierda
+            addRoad(35, 40, 35, -4, 5);
+
+            // Pequeña recta
+            addRoad(40, 40, 40, 0, 0);
+
+            // Curva final difícil
+            addRoad(40, 50, 40, 3, -15);
+
+            // Recta de meta
+            addRoad(70, 70, 70, 0, 0);
 
             // Calcular longitud total
             trackLength = segments.length * SEGMENT_LENGTH;
@@ -369,9 +376,9 @@
 
             for (let i = 0; i < 8; i++) {
                 cars.push({
-                    z: (i + 1) * 2000, // Posición inicial más cercana
-                    x: (i % 2 === 0 ? -0.3 : 0.3), // Alternar carriles
-                    speed: 140 + Math.random() * 30, // Más lentos para que sea fácil ganar
+                    z: (i + 1) * 2500, // Posición inicial
+                    x: (i % 2 === 0 ? -0.4 : 0.4), // Alternar carriles
+                    speed: 180 + Math.random() * 40, // Rivales competitivos
                     color: carColors[i],
                     passed: false
                 });
@@ -789,13 +796,13 @@
                          (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
         }
 
-        // Actualizar física del jugador (MODO FÁCIL - imposible salirse)
+        // Actualizar física del jugador (EMOCIONANTE - puedes salirte pero vuelves fácil)
         function updatePlayer(dt) {
             const segment = findSegment(player.z);
             if (!segment) return;
 
             const speedPercent = player.speed / player.maxSpeed;
-            const dx = dt * 0.8 * speedPercent;  // Steering muy suave
+            const dx = dt * 1.5 * speedPercent;  // Steering responsive
 
             // Controles - Acelerar
             if (keys['ArrowUp'] || keys['KeyW']) {
@@ -811,7 +818,7 @@
                 player.speed -= player.decel * dt * 60;
             }
 
-            // Steering - muy suave
+            // Steering responsive
             let steering = 0;
             if (keys['ArrowLeft'] || keys['KeyA']) {
                 steering = -1;
@@ -823,25 +830,34 @@
             // Aplicar steering
             player.x += steering * dx;
 
-            // Auto-centrado MUY FUERTE cuando no se gira (vuelve al centro rápido)
+            // Auto-centrado FUERTE - ayuda a volver a la pista fácilmente
             if (steering === 0 && Math.abs(player.x) > 0.01) {
-                player.x *= 0.92;  // Vuelve rápido al centro
+                player.x *= 0.94;  // Vuelve al centro automáticamente
             }
 
             // Turbo
             player.turbo = keys['Space'] && player.turboFuel > 0;
             if (!player.turbo && player.turboFuel < 100) {
-                player.turboFuel += dt * 20;  // Recarga muy rápido
+                player.turboFuel += dt * 15;
             }
 
-            // SIN efecto de curva - el coche no se desvía solo
-            // (eliminado completamente para que sea fácil)
+            // Efecto de curva MODERADO - las curvas te empujan pero no demasiado
+            player.x -= (segment.curve * speedPercent * dt * 0.6);
 
-            // LÍMITE DURO - NO puedes salirte de la carretera
-            player.x = Math.max(-0.85, Math.min(0.85, player.x));
+            // Límite amplio - PUEDES salirte pero no demasiado
+            player.x = Math.max(-1.8, Math.min(1.8, player.x));
 
-            // Velocidad máxima (con turbo va más rápido)
-            const maxSpeed = player.turbo ? player.maxSpeed * 1.4 : player.maxSpeed;
+            // Velocidad según posición
+            const offRoad = Math.abs(player.x) > 1;
+            let maxSpeed;
+            if (offRoad) {
+                // Fuera de pista: más lento pero no mucho
+                maxSpeed = player.turbo ? 180 : 160;
+                player.speed *= 0.995;  // Frena suave fuera de pista
+            } else {
+                // En pista: velocidad máxima
+                maxSpeed = player.turbo ? player.maxSpeed * 1.3 : player.maxSpeed;
+            }
             player.speed = Math.max(0, Math.min(player.speed, maxSpeed));
 
             // Mover hacia adelante
@@ -883,9 +899,9 @@
                 car.x -= segment.curve * 0.01;
                 car.x = Math.max(-0.8, Math.min(0.8, car.x));
 
-                // Variar velocidad (rivales más lentos)
+                // Variar velocidad (rivales competitivos)
                 if (Math.random() > 0.99) {
-                    car.speed = 120 + Math.random() * 40;
+                    car.speed = 170 + Math.random() * 50;
                 }
             });
 
