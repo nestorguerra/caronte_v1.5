@@ -473,6 +473,29 @@
                 <a href="acropolis-treasure-hunt.html" class="play-btn">▶ JUGAR</a>
             </div>
         </article>
+
+        <!-- Juego 3: Leo vs Reyes Magos -->
+        <article class="game-card">
+            <div class="game-cover">
+                <canvas id="cover3" width="380" height="280"></canvas>
+                <div class="new-badge">NEW!</div>
+                <div class="rating-badge">TODOS</div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">LEO VS REYES MAGOS</h2>
+                <p class="game-description">
+                    ¡Estilo Pacman! Los Reyes Magos persiguen a Leo.
+                    Recoge regalos, usa el carbón para asustarlos
+                    y escapa con todos los regalos.
+                </p>
+                <div class="game-meta">
+                    <span class="meta-item">🎮 1 JUGADOR</span>
+                    <span class="meta-item">👑 3 REYES</span>
+                    <span class="meta-item">🎁 PACMAN</span>
+                </div>
+                <a href="leo-vs-reyes-magos.html" class="play-btn">▶ JUGAR</a>
+            </div>
+        </article>
     </main>
 
     <!-- High Scores decorativo -->
@@ -817,13 +840,185 @@
             ctx.fillText('ACRÓPOLIS', canvas.width/2, 273);
         }
 
+        // ===== PORTADA 3: Leo vs Reyes Magos =====
+        function drawCover3() {
+            const canvas = document.getElementById('cover3');
+            const ctx = canvas.getContext('2d');
+
+            // Fondo azul oscuro estilo Pacman
+            ctx.fillStyle = '#000022';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Laberinto simplificado
+            ctx.strokeStyle = '#1a4a1a';
+            ctx.lineWidth = 4;
+
+            // Muros del laberinto
+            const walls = [
+                [20, 20, 340, 20], [20, 20, 20, 100], [340, 20, 340, 100],
+                [60, 60, 120, 60], [160, 60, 220, 60], [260, 60, 320, 60],
+                [60, 60, 60, 100], [120, 60, 120, 100], [260, 60, 260, 100], [320, 60, 320, 100],
+                [20, 140, 80, 140], [120, 140, 260, 140], [300, 140, 360, 140],
+                [160, 100, 220, 100], [160, 100, 160, 140], [220, 100, 220, 140]
+            ];
+
+            walls.forEach(w => {
+                ctx.beginPath();
+                ctx.moveTo(w[0], w[1]);
+                ctx.lineTo(w[2], w[3]);
+                ctx.stroke();
+            });
+
+            // Luces navideñas en el laberinto
+            const colors = ['#ff0000', '#ffd700', '#00ff00', '#ff00ff'];
+            for (let i = 0; i < 15; i++) {
+                ctx.fillStyle = colors[i % 4];
+                ctx.beginPath();
+                ctx.arc(30 + i * 22, 20, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Regalos (puntos)
+            ctx.fillStyle = '#ffd700';
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 5; j++) {
+                    if (Math.random() > 0.3) {
+                        ctx.beginPath();
+                        ctx.arc(50 + i * 40, 40 + j * 35, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Leo (Pacman)
+            const time = Date.now() / 200;
+            const mouthAngle = Math.abs(Math.sin(time)) * 0.5;
+
+            ctx.fillStyle = '#fcd34d';
+            ctx.beginPath();
+            ctx.arc(100, 110, 22, mouthAngle + 0.2, Math.PI * 2 - mouthAngle - 0.2);
+            ctx.lineTo(100, 110);
+            ctx.closePath();
+            ctx.fill();
+
+            // Ojo de Leo
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(105, 98, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pelo de Leo
+            ctx.fillStyle = '#78350f';
+            ctx.beginPath();
+            ctx.arc(100, 95, 10, Math.PI, 0, false);
+            ctx.fill();
+
+            // Los 3 Reyes Magos (fantasmas)
+            const kingsData = [
+                { x: 220, y: 90, color: '#ff6b6b', name: 'M' },
+                { x: 270, y: 110, color: '#4ecdc4', name: 'G' },
+                { x: 320, y: 90, color: '#ffe66d', name: 'B' }
+            ];
+
+            kingsData.forEach((king, i) => {
+                const wobble = Math.sin(time + i) * 3;
+
+                // Cuerpo fantasma
+                ctx.fillStyle = king.color;
+                ctx.beginPath();
+                ctx.arc(king.x, king.y - 5 + wobble, 18, Math.PI, 0, false);
+                ctx.lineTo(king.x + 18, king.y + 15 + wobble);
+                for (let j = 0; j < 6; j++) {
+                    ctx.lineTo(king.x + 18 - j * 6, king.y + (j % 2 ? 15 : 20) + wobble);
+                }
+                ctx.closePath();
+                ctx.fill();
+
+                // Corona
+                ctx.fillStyle = '#ffd700';
+                ctx.beginPath();
+                ctx.moveTo(king.x - 12, king.y - 20 + wobble);
+                ctx.lineTo(king.x - 8, king.y - 12 + wobble);
+                ctx.lineTo(king.x, king.y - 18 + wobble);
+                ctx.lineTo(king.x + 8, king.y - 12 + wobble);
+                ctx.lineTo(king.x + 12, king.y - 20 + wobble);
+                ctx.lineTo(king.x + 12, king.y - 12 + wobble);
+                ctx.lineTo(king.x - 12, king.y - 12 + wobble);
+                ctx.closePath();
+                ctx.fill();
+
+                // Ojos
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.ellipse(king.x - 6, king.y - 3 + wobble, 5, 6, 0, 0, Math.PI * 2);
+                ctx.ellipse(king.x + 6, king.y - 3 + wobble, 5, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(king.x - 4, king.y - 2 + wobble, 2, 0, Math.PI * 2);
+                ctx.arc(king.x + 8, king.y - 2 + wobble, 2, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Carbón (power pellet)
+            ctx.fillStyle = '#333';
+            ctx.beginPath();
+            ctx.arc(50, 170, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'rgba(255, 100, 100, 0.6)';
+            ctx.beginPath();
+            ctx.arc(46, 166, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Roscón de Reyes
+            ctx.fillStyle = '#d4a574';
+            ctx.beginPath();
+            ctx.ellipse(320, 170, 20, 12, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#000022';
+            ctx.beginPath();
+            ctx.ellipse(320, 170, 8, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            // Frutas
+            ctx.fillStyle = '#ff0000';
+            ctx.beginPath();
+            ctx.arc(310, 165, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#00ff00';
+            ctx.beginPath();
+            ctx.arc(330, 168, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Estrella de Belén
+            ctx.fillStyle = '#ffd700';
+            ctx.font = '20px Arial';
+            ctx.fillText('⭐', 175, 55);
+
+            // Título
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+            ctx.fillRect(0, 200, canvas.width, 80);
+
+            ctx.fillStyle = '#ff6b6b';
+            ctx.font = 'bold 18px "Press Start 2P", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('LEO VS', canvas.width/2, 230);
+            ctx.fillStyle = '#ffd700';
+            ctx.fillText('REYES MAGOS', canvas.width/2, 255);
+            ctx.fillStyle = '#4ecdc4';
+            ctx.font = '10px "Press Start 2P", monospace';
+            ctx.fillText('👑 PACMAN STYLE 👑', canvas.width/2, 273);
+        }
+
         // Dibujar portadas
         drawCover1();
         drawCover2();
+        drawCover3();
 
         // Redibujar periódicamente para animación sutil
         setInterval(() => {
             drawCover1();
+            drawCover3();
         }, 100);
     </script>
 </body>
