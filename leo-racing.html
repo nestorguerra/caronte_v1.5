@@ -768,23 +768,29 @@
 
         // Renderizar
         function render() {
-            // Limpiar canvas
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
             // Fondo
             drawBackground();
+
+            // Debug: mostrar que render está funcionando
+            ctx.fillStyle = '#fff';
+            ctx.font = '12px Arial';
+            ctx.fillText('Segments: ' + segments.length + ' | TrackLen: ' + trackLength, 10, HEIGHT - 10);
 
             // Verificar que hay segmentos
             if (segments.length === 0) {
                 ctx.fillStyle = '#ff0000';
-                ctx.font = '20px Arial';
-                ctx.fillText('ERROR: No hay segmentos - ' + trackLength, 100, 300);
+                ctx.font = '30px Arial';
+                ctx.fillText('ERROR: No hay segmentos', 200, 300);
                 return;
             }
 
             const baseSegment = findSegment(player.z);
-            if (!baseSegment) return;
+            if (!baseSegment) {
+                ctx.fillStyle = '#ff0000';
+                ctx.font = '20px Arial';
+                ctx.fillText('ERROR: baseSegment null', 200, 320);
+                return;
+            }
 
             const basePercent = (player.z % SEGMENT_LENGTH) / SEGMENT_LENGTH;
             const playerSegment = findSegment(player.z + CAMERA_HEIGHT);
