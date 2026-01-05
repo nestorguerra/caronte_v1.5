@@ -534,42 +534,90 @@
             if (leo.direction === 'up') rotation = -Math.PI / 2;
             ctx.rotate(rotation);
 
-            // Animación de boca
-            leo.mouthOpen += 0.3;
-            const mouthAngle = Math.abs(Math.sin(leo.mouthOpen)) * 0.5;
+            // Animación de movimiento
+            const bounce = Math.sin(Date.now() / 80) * 1.5;
 
-            // Cuerpo de Leo (amarillo estilo Pacman pero con cara)
-            ctx.fillStyle = '#fcd34d';
-            ctx.beginPath();
-            ctx.arc(0, 0, 12, mouthAngle, Math.PI * 2 - mouthAngle);
-            ctx.lineTo(0, 0);
-            ctx.closePath();
-            ctx.fill();
+            // ===== LEO ESTILO MINECRAFT =====
 
-            // Ojo
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(-2, -6, 3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(-1, -7, 1, 0, Math.PI * 2);
-            ctx.fill();
+            // Cuerpo (camiseta verde)
+            ctx.fillStyle = '#4a7c29';
+            ctx.fillRect(-8, 2 + bounce, 16, 12);
 
-            // Pelo de Leo
-            ctx.fillStyle = '#78350f';
+            // Mangas verdes
+            ctx.fillStyle = '#4a7c29';
+            ctx.fillRect(-12, 2 + bounce, 4, 8);
+            ctx.fillRect(8, 2 + bounce, 4, 8);
+
+            // Brazos (piel)
+            ctx.fillStyle = '#ffcc99';
+            ctx.fillRect(-12, 10 + bounce, 4, 4);
+            ctx.fillRect(8, 10 + bounce, 4, 4);
+
+            // Cabeza cuadrada (piel)
+            ctx.fillStyle = '#ffcc99';
+            ctx.fillRect(-10, -14 + bounce, 20, 16);
+
+            // Pelo naranja (estilo Minecraft)
+            ctx.fillStyle = '#d97706';
+            // Parte superior del pelo
+            ctx.fillRect(-10, -16 + bounce, 20, 4);
+            // Lados del pelo
+            ctx.fillRect(-10, -12 + bounce, 3, 8);
+            ctx.fillRect(7, -12 + bounce, 3, 8);
+            // Flequillo
+            ctx.fillRect(-7, -12 + bounce, 4, 2);
+            ctx.fillRect(3, -12 + bounce, 4, 2);
+
+            // Ojos
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(-7, -8 + bounce, 5, 4);
+            ctx.fillRect(2, -8 + bounce, 5, 4);
+
+            // Pupilas (verdes como en Minecraft Alex)
+            ctx.fillStyle = '#22c55e';
+            ctx.fillRect(-5, -7 + bounce, 3, 3);
+            ctx.fillRect(4, -7 + bounce, 3, 3);
+
+            // Pupilas negras
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(-4, -6 + bounce, 2, 2);
+            ctx.fillRect(5, -6 + bounce, 2, 2);
+
+            // Boca (sonrisa)
+            ctx.fillStyle = '#d97706';
+            ctx.fillRect(-3, -1 + bounce, 6, 2);
+
+            // Espada de diamante
+            ctx.save();
+            ctx.rotate(0.3);
+            // Mango
+            ctx.fillStyle = '#8b4513';
+            ctx.fillRect(12, -2 + bounce, 3, 8);
+            // Guarda
+            ctx.fillStyle = '#ffd700';
+            ctx.fillRect(10, -2 + bounce, 7, 2);
+            // Hoja de diamante
+            ctx.fillStyle = '#00bcd4';
+            ctx.fillRect(12, -16 + bounce, 3, 14);
+            // Punta
             ctx.beginPath();
-            ctx.arc(0, -8, 6, Math.PI, 0, false);
+            ctx.moveTo(12, -16 + bounce);
+            ctx.lineTo(13.5, -20 + bounce);
+            ctx.lineTo(15, -16 + bounce);
             ctx.fill();
+            // Brillo en la espada
+            ctx.fillStyle = '#80deea';
+            ctx.fillRect(13, -14 + bounce, 1, 10);
+            ctx.restore();
 
             ctx.restore();
 
-            // Efecto de power mode
+            // Efecto de power mode (brillo dorado)
             if (powerMode) {
                 ctx.strokeStyle = `rgba(255, 215, 0, ${0.5 + Math.sin(Date.now() / 100) * 0.3})`;
                 ctx.lineWidth = 3;
                 ctx.beginPath();
-                ctx.arc(px, py, 16, 0, Math.PI * 2);
+                ctx.arc(px, py, 20, 0, Math.PI * 2);
                 ctx.stroke();
             }
         }
@@ -983,12 +1031,147 @@
             }
         }
 
+        // Variables para comportamiento de los Reyes
+        let scatterMode = false;
+        let scatterTimer = 0;
+        let chaseTimer = 0;
+        const SCATTER_TIME = 420; // 7 segundos a 60fps
+        const CHASE_TIME = 1200;  // 20 segundos
+
+        // Esquinas para modo scatter (patrulla)
+        const scatterTargets = {
+            'Melchor': { x: 1, y: 1 },      // Esquina superior izquierda
+            'Gaspar': { x: COLS - 2, y: 1 }, // Esquina superior derecha
+            'Baltasar': { x: COLS - 2, y: ROWS - 2 } // Esquina inferior derecha
+        };
+
+        // Función para obtener el objetivo según la personalidad del Rey
+        function getKingTarget(king) {
+            // Si está en modo scatter, ir a su esquina
+            if (scatterMode && !king.scared && !king.eaten) {
+                return scatterTargets[king.name];
+            }
+
+            // Si fue comido, ir a casa
+            if (king.eaten) {
+                return { x: 10, y: 10 };
+            }
+
+            // Si está asustado, huir de Leo
+            if (king.scared) {
+                // Calcular dirección opuesta a Leo
+                const awayX = king.x + (king.x - leo.x);
+                const awayY = king.y + (king.y - leo.y);
+                return { x: awayX, y: awayY };
+            }
+
+            // Comportamiento único para cada Rey
+            switch (king.name) {
+                case 'Melchor':
+                    // PERSEGUIDOR DIRECTO - Siempre va directo a Leo
+                    return { x: leo.x, y: leo.y };
+
+                case 'Gaspar':
+                    // EMBOSCADOR - Apunta 4 casillas delante de Leo
+                    let targetX = leo.x;
+                    let targetY = leo.y;
+                    const lookAhead = 4;
+                    if (leo.direction === 'up') targetY -= lookAhead;
+                    if (leo.direction === 'down') targetY += lookAhead;
+                    if (leo.direction === 'left') targetX -= lookAhead;
+                    if (leo.direction === 'right') targetX += lookAhead;
+                    // Mantener dentro del mapa
+                    targetX = Math.max(1, Math.min(COLS - 2, targetX));
+                    targetY = Math.max(1, Math.min(ROWS - 2, targetY));
+                    return { x: targetX, y: targetY };
+
+                case 'Baltasar':
+                    // PATRULLERO/IMPREDECIBLE - Persigue si está cerca, patrulla si está lejos
+                    const distToLeo = Math.sqrt((king.x - leo.x) ** 2 + (king.y - leo.y) ** 2);
+                    if (distToLeo < 8) {
+                        // Cerca de Leo: perseguir
+                        return { x: leo.x, y: leo.y };
+                    } else {
+                        // Lejos: ir a su esquina de patrulla
+                        return scatterTargets['Baltasar'];
+                    }
+
+                default:
+                    return { x: leo.x, y: leo.y };
+            }
+        }
+
+        // Función para elegir la mejor dirección hacia un objetivo
+        function chooseBestDirection(king, targetX, targetY, directions) {
+            if (directions.length === 0) return king.direction;
+
+            let bestDir = directions[0];
+            let bestDist = Infinity;
+
+            // Si está asustado, queremos MAXIMIZAR distancia (huir)
+            if (king.scared) {
+                bestDist = -Infinity;
+                directions.forEach(dir => {
+                    let testX = king.x, testY = king.y;
+                    if (dir === 'up') testY--;
+                    if (dir === 'down') testY++;
+                    if (dir === 'left') testX--;
+                    if (dir === 'right') testX++;
+                    const dist = Math.sqrt((testX - leo.x) ** 2 + (testY - leo.y) ** 2);
+                    if (dist > bestDist) {
+                        bestDist = dist;
+                        bestDir = dir;
+                    }
+                });
+                // Añadir algo de aleatoriedad al huir
+                if (Math.random() < 0.3 && directions.length > 1) {
+                    bestDir = directions[Math.floor(Math.random() * directions.length)];
+                }
+            } else {
+                // Normal: minimizar distancia al objetivo
+                directions.forEach(dir => {
+                    let testX = king.x, testY = king.y;
+                    if (dir === 'up') testY--;
+                    if (dir === 'down') testY++;
+                    if (dir === 'left') testX--;
+                    if (dir === 'right') testX++;
+                    const dist = Math.sqrt((testX - targetX) ** 2 + (testY - targetY) ** 2);
+                    if (dist < bestDist) {
+                        bestDist = dist;
+                        bestDir = dir;
+                    }
+                });
+            }
+
+            return bestDir;
+        }
+
         function updateKings() {
+            // Actualizar temporizadores de scatter/chase
+            if (!powerMode) {
+                if (scatterMode) {
+                    scatterTimer--;
+                    if (scatterTimer <= 0) {
+                        scatterMode = false;
+                        chaseTimer = CHASE_TIME;
+                    }
+                } else {
+                    chaseTimer--;
+                    if (chaseTimer <= 0) {
+                        scatterMode = true;
+                        scatterTimer = SCATTER_TIME;
+                    }
+                }
+            }
+
             kings.forEach(king => {
-                // Velocidad
-                let speed = king.speed + (level - 1) * 0.01;
+                // Velocidad según estado
+                let speed = king.speed + (level - 1) * 0.015;
                 if (king.scared) speed *= 0.5;
-                if (king.eaten) speed *= 2;
+                if (king.eaten) speed *= 2.5;
+                // Velocidad variable por personalidad
+                if (king.name === 'Melchor') speed *= 1.1; // Más rápido
+                if (king.name === 'Baltasar') speed *= 0.95; // Más lento pero impredecible
 
                 // Moverse hacia el target
                 const dx = king.targetX - king.x;
@@ -1007,79 +1190,36 @@
                     king.y = king.targetY;
 
                     // Si fue comido y llegó a casa, revivir
-                    if (king.eaten && king.x >= 9 && king.x <= 11 && king.y >= 9 && king.y <= 10) {
+                    if (king.eaten && king.x >= 9 && king.x <= 11 && king.y >= 9 && king.y <= 11) {
                         king.eaten = false;
                         king.scared = powerMode;
                     }
 
-                    // Elegir nueva dirección
+                    // Obtener direcciones disponibles (evitar dar la vuelta)
                     const directions = [];
+                    const opposites = { 'up': 'down', 'down': 'up', 'left': 'right', 'right': 'left' };
+
                     if (canMove(king.x, king.y - 1) && king.direction !== 'down') directions.push('up');
                     if (canMove(king.x, king.y + 1) && king.direction !== 'up') directions.push('down');
                     if (canMove(king.x - 1, king.y) && king.direction !== 'right') directions.push('left');
                     if (canMove(king.x + 1, king.y) && king.direction !== 'left') directions.push('right');
 
-                    if (directions.length > 0) {
-                        // Si está asustado, huir de Leo
-                        if (king.scared && !king.eaten) {
-                            let bestDir = directions[0];
-                            let bestDist = 0;
-                            directions.forEach(dir => {
-                                let testX = king.x, testY = king.y;
-                                if (dir === 'up') testY--;
-                                if (dir === 'down') testY++;
-                                if (dir === 'left') testX--;
-                                if (dir === 'right') testX++;
-                                const dist = Math.sqrt((testX - leo.x) ** 2 + (testY - leo.y) ** 2);
-                                if (dist > bestDist) {
-                                    bestDist = dist;
-                                    bestDir = dir;
-                                }
-                            });
-                            king.direction = bestDir;
-                        }
-                        // Si fue comido, ir a casa
-                        else if (king.eaten) {
-                            let bestDir = directions[0];
-                            let bestDist = Infinity;
-                            directions.forEach(dir => {
-                                let testX = king.x, testY = king.y;
-                                if (dir === 'up') testY--;
-                                if (dir === 'down') testY++;
-                                if (dir === 'left') testX--;
-                                if (dir === 'right') testX++;
-                                const dist = Math.sqrt((testX - 10) ** 2 + (testY - 10) ** 2);
-                                if (dist < bestDist) {
-                                    bestDist = dist;
-                                    bestDir = dir;
-                                }
-                            });
-                            king.direction = bestDir;
-                        }
-                        // Normal: perseguir a Leo (con algo de aleatoriedad)
-                        else {
-                            if (Math.random() < 0.7) {
-                                let bestDir = directions[0];
-                                let bestDist = Infinity;
-                                directions.forEach(dir => {
-                                    let testX = king.x, testY = king.y;
-                                    if (dir === 'up') testY--;
-                                    if (dir === 'down') testY++;
-                                    if (dir === 'left') testX--;
-                                    if (dir === 'right') testX++;
-                                    const dist = Math.sqrt((testX - leo.x) ** 2 + (testY - leo.y) ** 2);
-                                    if (dist < bestDist) {
-                                        bestDist = dist;
-                                        bestDir = dir;
-                                    }
-                                });
-                                king.direction = bestDir;
-                            } else {
-                                king.direction = directions[Math.floor(Math.random() * directions.length)];
-                            }
-                        }
+                    // Si no hay direcciones (callejón sin salida), permitir dar la vuelta
+                    if (directions.length === 0) {
+                        if (canMove(king.x, king.y - 1)) directions.push('up');
+                        if (canMove(king.x, king.y + 1)) directions.push('down');
+                        if (canMove(king.x - 1, king.y)) directions.push('left');
+                        if (canMove(king.x + 1, king.y)) directions.push('right');
+                    }
 
-                        // Actualizar target
+                    if (directions.length > 0) {
+                        // Obtener objetivo según personalidad
+                        const target = getKingTarget(king);
+
+                        // Elegir mejor dirección
+                        king.direction = chooseBestDirection(king, target.x, target.y, directions);
+
+                        // Actualizar target de movimiento
                         king.targetX = king.x;
                         king.targetY = king.y;
                         if (king.direction === 'up') king.targetY--;
@@ -1087,7 +1227,7 @@
                         if (king.direction === 'left') king.targetX--;
                         if (king.direction === 'right') king.targetX++;
 
-                        // Portal
+                        // Portal (túnel)
                         if (king.targetX < 0) king.targetX = COLS - 1;
                         if (king.targetX >= COLS) king.targetX = 0;
                     }
@@ -1120,6 +1260,7 @@
                     kings.forEach(k => {
                         if (!k.eaten) k.scared = false;
                     });
+                    ghostEatBonus = 200;
                 }
             }
         }
@@ -1214,6 +1355,11 @@
             level = 1;
             bonusTimer = 0;
             bonusItem = null;
+
+            // Inicializar comportamiento IA
+            scatterMode = true;
+            scatterTimer = SCATTER_TIME;
+            chaseTimer = 0;
 
             initMap();
             resetPositions();
