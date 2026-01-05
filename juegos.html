@@ -496,6 +496,29 @@
                 <a href="leo-vs-reyes-magos.html" class="play-btn">▶ JUGAR</a>
             </div>
         </article>
+
+        <!-- Juego 4: Leo Racing -->
+        <article class="game-card">
+            <div class="game-cover">
+                <canvas id="cover4" width="380" height="280"></canvas>
+                <div class="new-badge">NEW!</div>
+                <div class="rating-badge">TODOS</div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">LEO RACING</h2>
+                <p class="game-description">
+                    Carreras arcade en primera persona estilo años 90.
+                    Circuito Costa del Sol, 5 coches, curvas y colinas.
+                    ¡Usa el turbo para ganar!
+                </p>
+                <div class="game-meta">
+                    <span class="meta-item">🎮 1 JUGADOR</span>
+                    <span class="meta-item">🏎️ 5 COCHES</span>
+                    <span class="meta-item">🏁 3 VUELTAS</span>
+                </div>
+                <a href="leo-racing.html" class="play-btn">▶ JUGAR</a>
+            </div>
+        </article>
     </main>
 
     <!-- High Scores decorativo -->
@@ -1010,10 +1033,157 @@
             ctx.fillText('👑 PACMAN STYLE 👑', canvas.width/2, 273);
         }
 
+        // ===== PORTADA 4: Leo Racing =====
+        function drawCover4() {
+            const canvas = document.getElementById('cover4');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            // Cielo degradado
+            const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height/2);
+            skyGradient.addColorStop(0, '#0066cc');
+            skyGradient.addColorStop(1, '#87ceeb');
+            ctx.fillStyle = skyGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height/2);
+
+            // Sol
+            ctx.fillStyle = '#ffdd00';
+            ctx.beginPath();
+            ctx.arc(320, 50, 30, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Montañas
+            ctx.fillStyle = '#4a6741';
+            ctx.beginPath();
+            ctx.moveTo(0, 140);
+            ctx.lineTo(80, 80);
+            ctx.lineTo(150, 120);
+            ctx.lineTo(220, 70);
+            ctx.lineTo(300, 110);
+            ctx.lineTo(380, 90);
+            ctx.lineTo(380, 140);
+            ctx.closePath();
+            ctx.fill();
+
+            // Carretera (perspectiva)
+            const roadGradient = ctx.createLinearGradient(0, 140, 0, 280);
+            roadGradient.addColorStop(0, '#555');
+            roadGradient.addColorStop(1, '#333');
+
+            // Hierba
+            ctx.fillStyle = '#228b22';
+            ctx.fillRect(0, 140, canvas.width, 140);
+
+            // Carretera con perspectiva
+            ctx.fillStyle = roadGradient;
+            ctx.beginPath();
+            ctx.moveTo(140, 140);
+            ctx.lineTo(240, 140);
+            ctx.lineTo(380, 280);
+            ctx.lineTo(0, 280);
+            ctx.closePath();
+            ctx.fill();
+
+            // Líneas de carretera
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([20, 15]);
+            ctx.beginPath();
+            ctx.moveTo(190, 140);
+            ctx.lineTo(190, 280);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Bordes de carretera (rumbel strips)
+            for (let i = 0; i < 7; i++) {
+                const y = 145 + i * 20;
+                const width = 5 + i * 2;
+                const leftX = 140 - i * 20;
+                const rightX = 240 + i * 20;
+
+                ctx.fillStyle = i % 2 === 0 ? '#ff0000' : '#fff';
+                ctx.fillRect(leftX - width, y, width, 18);
+                ctx.fillRect(rightX, y, width, 18);
+            }
+
+            // Coche del jugador (abajo, grande)
+            const carX = 170;
+            const carY = 200;
+
+            // Sombra
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+            ctx.ellipse(carX + 20, carY + 60, 35, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cuerpo del coche
+            ctx.fillStyle = '#ff3300';
+            ctx.beginPath();
+            ctx.moveTo(carX, carY + 50);
+            ctx.lineTo(carX + 40, carY + 50);
+            ctx.lineTo(carX + 35, carY + 20);
+            ctx.lineTo(carX + 5, carY + 20);
+            ctx.closePath();
+            ctx.fill();
+
+            // Techo
+            ctx.fillStyle = '#cc2200';
+            ctx.beginPath();
+            ctx.moveTo(carX + 8, carY + 20);
+            ctx.lineTo(carX + 32, carY + 20);
+            ctx.lineTo(carX + 28, carY + 5);
+            ctx.lineTo(carX + 12, carY + 5);
+            ctx.closePath();
+            ctx.fill();
+
+            // Ventana
+            ctx.fillStyle = '#333';
+            ctx.fillRect(carX + 10, carY + 8, 20, 10);
+
+            // Ruedas
+            ctx.fillStyle = '#111';
+            ctx.fillRect(carX - 5, carY + 35, 10, 18);
+            ctx.fillRect(carX + 35, carY + 35, 10, 18);
+
+            // Coches rivales (más pequeños, arriba)
+            const rivals = [
+                { x: 160, y: 150, color: '#0000ff', scale: 0.4 },
+                { x: 220, y: 155, color: '#00ff00', scale: 0.35 }
+            ];
+
+            rivals.forEach(r => {
+                ctx.fillStyle = r.color;
+                ctx.fillRect(r.x, r.y, 20 * r.scale, 15 * r.scale);
+                ctx.fillStyle = '#111';
+                ctx.fillRect(r.x - 2, r.y + 8 * r.scale, 4 * r.scale, 8 * r.scale);
+                ctx.fillRect(r.x + 18 * r.scale, r.y + 8 * r.scale, 4 * r.scale, 8 * r.scale);
+            });
+
+            // Título
+            ctx.fillStyle = '#ff6600';
+            ctx.font = 'bold 28px "Press Start 2P", monospace';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = '#000';
+            ctx.shadowBlur = 5;
+            ctx.shadowOffsetX = 3;
+            ctx.shadowOffsetY = 3;
+            ctx.fillText('LEO', canvas.width/2, 35);
+
+            ctx.fillStyle = '#ffcc00';
+            ctx.font = 'bold 22px "Press Start 2P", monospace';
+            ctx.fillText('RACING', canvas.width/2, 65);
+            ctx.shadowBlur = 0;
+
+            // Badge
+            ctx.fillStyle = '#fff';
+            ctx.font = '10px "Press Start 2P", monospace';
+            ctx.fillText('🏎️ ARCADE 1998 🏁', canvas.width/2, 270);
+        }
+
         // Dibujar portadas
         drawCover1();
         drawCover2();
         drawCover3();
+        drawCover4();
 
         // Redibujar periódicamente para animación sutil
         setInterval(() => {
