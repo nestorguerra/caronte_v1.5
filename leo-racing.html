@@ -175,7 +175,7 @@
             </div>
             <div class="hud-item">
                 <div>POSICION</div>
-                <div class="position-display"><span id="position">1</span>/5</div>
+                <div class="position-display"><span id="position">1</span>/9</div>
             </div>
         </div>
 
@@ -190,7 +190,7 @@
 
             <div style="color: #fff; font-size: 10px; margin: 20px 0;">
                 <div style="color: #ffff00;">CIRCUITO: COSTA DEL SOL</div>
-                <div style="margin-top: 10px;">3 VUELTAS - 5 COCHES</div>
+                <div style="margin-top: 10px;">3 VUELTAS - 9 COCHES</div>
             </div>
 
             <button class="btn" onclick="startRace()">EMPEZAR CARRERA</button>
@@ -237,12 +237,10 @@
             x: 0,
             z: 0,
             speed: 0,
-            maxSpeed: 220,           // Reducido para mejor control
-            accel: 0.4,              // Aceleración más suave
-            brake: 0.8,
-            decel: 0.2,
-            offRoadDecel: 0.995,     // Menos penalización fuera de pista
-            offRoadMaxSpeed: 150,    // Más velocidad permitida fuera de pista
+            maxSpeed: 180,           // Velocidad moderada para control total
+            accel: 0.5,              // Buena aceleración
+            brake: 0.6,
+            decel: 0.15,
             turbo: false,
             turboFuel: 100
         };
@@ -265,40 +263,39 @@
             START: { light: '#ffffff', dark: '#000000' }
         };
 
-        // Crear circuito (curvas suavizadas para mejor jugabilidad)
+        // Crear circuito (MUY FÁCIL - curvas muy suaves)
         function createTrack() {
             segments = [];
 
-            // Sección de inicio - recta larga
-            addRoad(80, 80, 80, 0, 0);
+            // Sección de inicio - recta muy larga
+            addRoad(100, 100, 100, 0, 0);
 
-            // Primera curva suave a la derecha
-            addRoad(60, 60, 60, 1.5, 0);
+            // Curva MUY suave a la derecha
+            addRoad(80, 80, 80, 0.5, 0);
 
-            // Subida con curva suave a la izquierda
-            addRoad(60, 60, 60, -1, 20);
+            // Recta con pequeña subida
+            addRoad(80, 80, 80, 0, 10);
 
             // Recta en la colina
-            addRoad(50, 50, 50, 0, 10);
+            addRoad(60, 60, 60, 0, 5);
 
-            // Bajada con curva a la derecha
-            addRoad(60, 60, 60, 2, -25);
+            // Bajada suave
+            addRoad(80, 80, 80, 0.3, -15);
 
-            // Curva S suave
-            addRoad(50, 50, 50, -2, 0);
-            addRoad(50, 50, 50, 2, 0);
+            // Curva suave a la izquierda
+            addRoad(70, 70, 70, -0.5, 0);
 
-            // Recta larga
-            addRoad(120, 120, 120, 0, 0);
+            // Recta muy larga
+            addRoad(150, 150, 150, 0, 0);
 
-            // Curva a la izquierda
-            addRoad(50, 50, 50, -2.5, 5);
+            // Curva suave
+            addRoad(60, 60, 60, -0.4, 0);
 
             // Bajada final
-            addRoad(70, 70, 70, 1, -20);
+            addRoad(80, 80, 80, 0.3, -10);
 
-            // Recta de meta
-            addRoad(80, 80, 80, 0, 0);
+            // Recta de meta muy larga
+            addRoad(100, 100, 100, 0, 0);
 
             // Calcular longitud total
             trackLength = segments.length * SEGMENT_LENGTH;
@@ -365,16 +362,16 @@
             }
         }
 
-        // Crear coches rivales
+        // Crear coches rivales (8 coches para más diversión)
         function createCars() {
             cars = [];
-            const carColors = ['#ff0000', '#0000ff', '#00ff00', '#ffff00'];
+            const carColors = ['#ff0000', '#0000ff', '#00ff00', '#ffff00', '#ff00ff', '#00ffff', '#ff8800', '#8800ff'];
 
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < 8; i++) {
                 cars.push({
-                    z: (i + 1) * 3000, // Posición inicial
-                    x: (Math.random() - 0.5) * 0.8,
-                    speed: 200 + Math.random() * 50,
+                    z: (i + 1) * 2000, // Posición inicial más cercana
+                    x: (i % 2 === 0 ? -0.3 : 0.3), // Alternar carriles
+                    speed: 140 + Math.random() * 30, // Más lentos para que sea fácil ganar
                     color: carColors[i],
                     passed: false
                 });
@@ -639,15 +636,15 @@
                          (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
         }
 
-        // Actualizar física del jugador
+        // Actualizar física del jugador (MODO FÁCIL - imposible salirse)
         function updatePlayer(dt) {
             const segment = findSegment(player.z);
             if (!segment) return;
 
             const speedPercent = player.speed / player.maxSpeed;
-            const dx = dt * 1.2 * speedPercent;  // Reducido: era 2, ahora 1.2
+            const dx = dt * 0.8 * speedPercent;  // Steering muy suave
 
-            // Controles
+            // Controles - Acelerar
             if (keys['ArrowUp'] || keys['KeyW']) {
                 let accel = player.accel;
                 if (player.turbo && player.turboFuel > 0) {
@@ -661,7 +658,7 @@
                 player.speed -= player.decel * dt * 60;
             }
 
-            // Steering con suavizado
+            // Steering - muy suave
             let steering = 0;
             if (keys['ArrowLeft'] || keys['KeyA']) {
                 steering = -1;
@@ -673,32 +670,26 @@
             // Aplicar steering
             player.x += steering * dx;
 
-            // Auto-centrado suave cuando no se gira (ayuda a mantener el coche en la pista)
+            // Auto-centrado MUY FUERTE cuando no se gira (vuelve al centro rápido)
             if (steering === 0 && Math.abs(player.x) > 0.01) {
-                player.x *= 0.98;  // Vuelve lentamente al centro
+                player.x *= 0.92;  // Vuelve rápido al centro
             }
 
             // Turbo
             player.turbo = keys['Space'] && player.turboFuel > 0;
             if (!player.turbo && player.turboFuel < 100) {
-                player.turboFuel += dt * 15;  // Recarga más rápido
+                player.turboFuel += dt * 20;  // Recarga muy rápido
             }
 
-            // Efecto de la curva (REDUCIDO significativamente)
-            player.x -= (segment.curve * speedPercent * dt * 0.8);  // Era 2, ahora 0.8
+            // SIN efecto de curva - el coche no se desvía solo
+            // (eliminado completamente para que sea fácil)
 
-            // Limitar posición del jugador para no salirse demasiado
-            player.x = Math.max(-2, Math.min(2, player.x));
+            // LÍMITE DURO - NO puedes salirte de la carretera
+            player.x = Math.max(-0.85, Math.min(0.85, player.x));
 
-            // Limitar velocidad (carretera más ancha: 1.3 en lugar de 1)
-            const onRoad = Math.abs(player.x) <= 1.3;
-            const maxSpeed = onRoad ? (player.turbo ? player.maxSpeed * 1.3 : player.maxSpeed) : player.offRoadMaxSpeed;
+            // Velocidad máxima (con turbo va más rápido)
+            const maxSpeed = player.turbo ? player.maxSpeed * 1.4 : player.maxSpeed;
             player.speed = Math.max(0, Math.min(player.speed, maxSpeed));
-
-            // Reducir velocidad fuera de la carretera (menos agresivo)
-            if (!onRoad) {
-                player.speed *= player.offRoadDecel;
-            }
 
             // Mover hacia adelante
             player.z += player.speed * dt * 50;
@@ -739,9 +730,9 @@
                 car.x -= segment.curve * 0.01;
                 car.x = Math.max(-0.8, Math.min(0.8, car.x));
 
-                // Variar velocidad
+                // Variar velocidad (rivales más lentos)
                 if (Math.random() > 0.99) {
-                    car.speed = 180 + Math.random() * 70;
+                    car.speed = 120 + Math.random() * 40;
                 }
             });
 
