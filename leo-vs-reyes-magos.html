@@ -534,42 +534,90 @@
             if (leo.direction === 'up') rotation = -Math.PI / 2;
             ctx.rotate(rotation);
 
-            // Animación de boca
-            leo.mouthOpen += 0.3;
-            const mouthAngle = Math.abs(Math.sin(leo.mouthOpen)) * 0.5;
+            // Animación de movimiento
+            const bounce = Math.sin(Date.now() / 80) * 1.5;
 
-            // Cuerpo de Leo (amarillo estilo Pacman pero con cara)
-            ctx.fillStyle = '#fcd34d';
-            ctx.beginPath();
-            ctx.arc(0, 0, 12, mouthAngle, Math.PI * 2 - mouthAngle);
-            ctx.lineTo(0, 0);
-            ctx.closePath();
-            ctx.fill();
+            // ===== LEO ESTILO MINECRAFT =====
 
-            // Ojo
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(-2, -6, 3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(-1, -7, 1, 0, Math.PI * 2);
-            ctx.fill();
+            // Cuerpo (camiseta verde)
+            ctx.fillStyle = '#4a7c29';
+            ctx.fillRect(-8, 2 + bounce, 16, 12);
 
-            // Pelo de Leo
-            ctx.fillStyle = '#78350f';
+            // Mangas verdes
+            ctx.fillStyle = '#4a7c29';
+            ctx.fillRect(-12, 2 + bounce, 4, 8);
+            ctx.fillRect(8, 2 + bounce, 4, 8);
+
+            // Brazos (piel)
+            ctx.fillStyle = '#ffcc99';
+            ctx.fillRect(-12, 10 + bounce, 4, 4);
+            ctx.fillRect(8, 10 + bounce, 4, 4);
+
+            // Cabeza cuadrada (piel)
+            ctx.fillStyle = '#ffcc99';
+            ctx.fillRect(-10, -14 + bounce, 20, 16);
+
+            // Pelo naranja (estilo Minecraft)
+            ctx.fillStyle = '#d97706';
+            // Parte superior del pelo
+            ctx.fillRect(-10, -16 + bounce, 20, 4);
+            // Lados del pelo
+            ctx.fillRect(-10, -12 + bounce, 3, 8);
+            ctx.fillRect(7, -12 + bounce, 3, 8);
+            // Flequillo
+            ctx.fillRect(-7, -12 + bounce, 4, 2);
+            ctx.fillRect(3, -12 + bounce, 4, 2);
+
+            // Ojos
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(-7, -8 + bounce, 5, 4);
+            ctx.fillRect(2, -8 + bounce, 5, 4);
+
+            // Pupilas (verdes como en Minecraft Alex)
+            ctx.fillStyle = '#22c55e';
+            ctx.fillRect(-5, -7 + bounce, 3, 3);
+            ctx.fillRect(4, -7 + bounce, 3, 3);
+
+            // Pupilas negras
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(-4, -6 + bounce, 2, 2);
+            ctx.fillRect(5, -6 + bounce, 2, 2);
+
+            // Boca (sonrisa)
+            ctx.fillStyle = '#d97706';
+            ctx.fillRect(-3, -1 + bounce, 6, 2);
+
+            // Espada de diamante
+            ctx.save();
+            ctx.rotate(0.3);
+            // Mango
+            ctx.fillStyle = '#8b4513';
+            ctx.fillRect(12, -2 + bounce, 3, 8);
+            // Guarda
+            ctx.fillStyle = '#ffd700';
+            ctx.fillRect(10, -2 + bounce, 7, 2);
+            // Hoja de diamante
+            ctx.fillStyle = '#00bcd4';
+            ctx.fillRect(12, -16 + bounce, 3, 14);
+            // Punta
             ctx.beginPath();
-            ctx.arc(0, -8, 6, Math.PI, 0, false);
+            ctx.moveTo(12, -16 + bounce);
+            ctx.lineTo(13.5, -20 + bounce);
+            ctx.lineTo(15, -16 + bounce);
             ctx.fill();
+            // Brillo en la espada
+            ctx.fillStyle = '#80deea';
+            ctx.fillRect(13, -14 + bounce, 1, 10);
+            ctx.restore();
 
             ctx.restore();
 
-            // Efecto de power mode
+            // Efecto de power mode (brillo dorado)
             if (powerMode) {
                 ctx.strokeStyle = `rgba(255, 215, 0, ${0.5 + Math.sin(Date.now() / 100) * 0.3})`;
                 ctx.lineWidth = 3;
                 ctx.beginPath();
-                ctx.arc(px, py, 16, 0, Math.PI * 2);
+                ctx.arc(px, py, 20, 0, Math.PI * 2);
                 ctx.stroke();
             }
         }
