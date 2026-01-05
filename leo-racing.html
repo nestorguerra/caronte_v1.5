@@ -796,26 +796,37 @@
                          (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
         }
 
-        // Actualizar física del jugador (EMOCIONANTE - puedes salirte pero vuelves fácil)
+        // Actualizar física del jugador
         function updatePlayer(dt) {
             const segment = findSegment(player.z);
             if (!segment) return;
 
             const speedPercent = player.speed / player.maxSpeed;
-            const dx = dt * 1.5 * speedPercent;  // Steering responsive
+            const dx = dt * 1.8 * speedPercent;  // Steering responsive
 
             // Controles - Acelerar
             if (keys['ArrowUp'] || keys['KeyW']) {
                 let accel = player.accel;
-                if (player.turbo && player.turboFuel > 0) {
-                    accel *= 1.5;
-                    player.turboFuel -= dt * 30;
+                // Turbo - boost de velocidad
+                if (keys['Space'] && player.turboFuel > 0) {
+                    player.turbo = true;
+                    accel *= 1.6;
+                    player.turboFuel = Math.max(0, player.turboFuel - dt * 25);
+                } else {
+                    player.turbo = false;
                 }
                 player.speed += accel * dt * 60;
             } else if (keys['ArrowDown'] || keys['KeyS']) {
+                player.turbo = false;
                 player.speed -= player.brake * dt * 60;
             } else {
+                player.turbo = false;
                 player.speed -= player.decel * dt * 60;
+            }
+
+            // Recargar turbo siempre (más rápido si no se usa)
+            if (!player.turbo && player.turboFuel < 100) {
+                player.turboFuel = Math.min(100, player.turboFuel + dt * 20);
             }
 
             // Steering responsive
@@ -830,33 +841,31 @@
             // Aplicar steering
             player.x += steering * dx;
 
-            // Auto-centrado FUERTE - ayuda a volver a la pista fácilmente
-            if (steering === 0 && Math.abs(player.x) > 0.01) {
-                player.x *= 0.94;  // Vuelve al centro automáticamente
+            // Auto-centrado suave - ayuda a volver pero no fuerza
+            if (steering === 0 && Math.abs(player.x) > 0.02) {
+                player.x *= 0.97;  // Vuelve al centro suavemente
             }
 
-            // Turbo
-            player.turbo = keys['Space'] && player.turboFuel > 0;
-            if (!player.turbo && player.turboFuel < 100) {
-                player.turboFuel += dt * 15;
-            }
+            // Efecto de curva - las curvas te empujan (si no conduces bien, te sales!)
+            player.x -= (segment.curve * speedPercent * dt * 0.8);
 
-            // Efecto de curva MODERADO - las curvas te empujan pero no demasiado
-            player.x -= (segment.curve * speedPercent * dt * 0.6);
+            // SIN límite duro - puedes salirte completamente si no conduces bien
+            // pero hay un límite muy amplio para no perderse
+            player.x = Math.max(-2.5, Math.min(2.5, player.x));
 
-            // Límite amplio - PUEDES salirte pero no demasiado
-            player.x = Math.max(-1.8, Math.min(1.8, player.x));
-
-            // Velocidad según posición
-            const offRoad = Math.abs(player.x) > 1;
+            // Velocidad según posición en la pista
+            const offRoadAmount = Math.abs(player.x) - 1;  // Cuánto te has salido
             let maxSpeed;
-            if (offRoad) {
-                // Fuera de pista: más lento pero no mucho
-                maxSpeed = player.turbo ? 180 : 160;
-                player.speed *= 0.995;  // Frena suave fuera de pista
+
+            if (offRoadAmount > 0) {
+                // Fuera de pista - penalización progresiva
+                const penalty = Math.min(offRoadAmount * 0.4, 0.6);  // Hasta 60% de penalización
+                maxSpeed = player.maxSpeed * (1 - penalty);
+                if (player.turbo) maxSpeed *= 1.2;
+                player.speed *= (1 - penalty * 0.01);  // Frena según lo lejos que estés
             } else {
                 // En pista: velocidad máxima
-                maxSpeed = player.turbo ? player.maxSpeed * 1.3 : player.maxSpeed;
+                maxSpeed = player.turbo ? player.maxSpeed * 1.35 : player.maxSpeed;
             }
             player.speed = Math.max(0, Math.min(player.speed, maxSpeed));
 
