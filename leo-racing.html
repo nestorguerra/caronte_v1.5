@@ -1050,23 +1050,38 @@
 
         // Game loop
         let lastTime = 0;
-        function gameLoop(currentTime = 0) {
+        function gameLoop(currentTime) {
             if (gameState !== 'playing') return;
 
+            // Primer frame - inicializar tiempo
+            if (!currentTime) {
+                lastTime = performance.now();
+                requestAnimationFrame(gameLoop);
+                return;
+            }
+
             try {
-                const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
+                const dt = Math.min(Math.max((currentTime - lastTime) / 1000, 0), 0.1);
                 lastTime = currentTime;
 
-                raceTime += dt;
-                lapTime += dt;
+                if (dt > 0) {
+                    raceTime += dt;
+                    lapTime += dt;
 
-                updatePlayer(dt);
-                updateCars(dt);
-                checkCollisions();
+                    updatePlayer(dt);
+                    updateCars(dt);
+                    checkCollisions();
+                }
+
                 render();
                 updateHUD();
+
             } catch (error) {
                 console.error('Error en gameLoop:', error);
+                // Dibujar error en pantalla
+                ctx.fillStyle = '#ff0000';
+                ctx.font = '16px Arial';
+                ctx.fillText('ERROR: ' + error.message, 50, 400);
             }
 
             requestAnimationFrame(gameLoop);
