@@ -383,14 +383,28 @@
                 { color: '#8800ff', name: 'LUCIA' }
             ];
 
+            // Todos parten del podium/parrilla de salida
+            const startPositions = [
+                { z: 100, x: -0.4 },   // Fila 1
+                { z: 100, x: 0.4 },
+                { z: 250, x: -0.4 },   // Fila 2
+                { z: 250, x: 0.4 },
+                { z: 400, x: -0.4 },   // Fila 3
+                { z: 400, x: 0.4 },
+                { z: 550, x: -0.4 },   // Fila 4
+                { z: 550, x: 0.4 }
+            ];
+
             for (let i = 0; i < 8; i++) {
                 cars.push({
-                    z: (i + 1) * 2500, // Posición inicial
-                    x: (i % 2 === 0 ? -0.4 : 0.4), // Alternar carriles
-                    speed: 180 + Math.random() * 40, // Rivales competitivos
+                    z: startPositions[i].z,
+                    x: startPositions[i].x,
+                    speed: 0,  // Todos empiezan parados
+                    targetSpeed: 200 + Math.random() * 35,  // Velocidad objetivo diferente
                     color: carData[i].color,
                     name: carData[i].name,
-                    passed: false
+                    passed: false,
+                    aggression: 0.8 + Math.random() * 0.4  // Agresividad de cada piloto
                 });
             }
         }
@@ -909,9 +923,14 @@
             }
         }
 
-        // Actualizar coches rivales
+        // Actualizar coches rivales (IA competitiva)
         function updateCars(dt) {
             cars.forEach(car => {
+                // Acelerar hacia velocidad objetivo (simula salida)
+                if (car.speed < car.targetSpeed) {
+                    car.speed += 0.5 * car.aggression * dt * 60;
+                }
+
                 // Mover
                 car.z += car.speed * dt * 50;
 
@@ -920,14 +939,27 @@
                     car.z -= trackLength;
                 }
 
-                // IA simple: seguir la carretera
+                // IA mejorada: seguir la carretera y competir
                 const segment = findSegment(car.z);
-                car.x -= segment.curve * 0.01;
-                car.x = Math.max(-0.8, Math.min(0.8, car.x));
 
-                // Variar velocidad (rivales competitivos)
-                if (Math.random() > 0.99) {
-                    car.speed = 170 + Math.random() * 50;
+                // Contravolante en curvas (más agresivo = mejor piloto)
+                car.x -= segment.curve * 0.015 * car.aggression;
+                car.x = Math.max(-0.7, Math.min(0.7, car.x));
+
+                // Variar velocidad aleatoriamente (simula errores y adelantamientos)
+                if (Math.random() > 0.98) {
+                    car.targetSpeed = 190 + Math.random() * 45;
+                }
+
+                // Boost ocasional (como si usaran turbo)
+                if (Math.random() > 0.995) {
+                    car.speed = Math.min(car.speed + 20, 250);
+                }
+
+                // Si están cerca del jugador, intentan adelantar
+                const distToPlayer = Math.abs(car.z - player.z);
+                if (distToPlayer < 500 && car.z < player.z) {
+                    car.speed = Math.min(car.speed + 0.3 * dt * 60, 240);
                 }
             });
 
