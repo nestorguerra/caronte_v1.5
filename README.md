@@ -59,7 +59,7 @@ Mi papa me conto que la Acropolis esta en Atenas y que es muy muy vieja, de hace
 
 Es muy facil!! Solo tienes que:
 
-1. Abrir el archivo `juegos.html` en el navegador
+1. Abrir el archivo `index.html` en el navegador
 2. Elegir el juego que quieras
 3. JUGAR Y PASARTELO BIEN!! 🎉
 
@@ -67,7 +67,7 @@ Es muy facil!! Solo tienes que:
 
 | Archivo | Que es |
 |---------|--------|
-| `juegos.html` | La plataforma donde eliges el juego |
+| `index.html` | La plataforma donde eliges el juego |
 | `leo-racing.html` | El juego de coches |
 | `leo-vs-reyes-magos.html` | El juego de los Reyes Magos |
 | `leo-minecraft-adventure.html` | El juego tipo Minecraft |

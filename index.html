@@ -1,1625 +1,1195 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caronte · Tu yo futuro te escribe</title>
-    <meta name="description"
-        content="Responde 40 preguntas y recibe un libro único, escrito desde tu yo de dentro de 25 años. Literatura personalizada con IA.">
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="Caronte · Tu yo futuro te escribe">
-    <meta property="og:description" content="Un libro de 100 páginas escrito solo para ti, desde tu propio futuro.">
-    <meta property="og:type" content="website">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
-        rel="stylesheet">
-
+    <title>Los Juegos de Leo - Arcade Retro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --black-deep: #0A0A0B;
-            --gray-dark: #1A1A1D;
-            --gray-mid: #2D2D32;
-            --gray-text: #A0A0A8;
-            --white-warm: #F5F5F3;
-            --gold: #C9A962;
-            --gold-hover: #D4B978;
-            --gold-dim: rgba(201, 169, 98, 0.1);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            background-color: var(--black-deep);
-            color: var(--white-warm);
-            line-height: 1.7;
-            font-size: 19px;
+            background: #0a0a1a;
+            min-height: 100vh;
+            font-family: 'Press Start 2P', cursive;
             overflow-x: hidden;
         }
 
-        /* Typography */
-        h1,
-        h2,
-        h3,
-        h4 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-weight: 500;
-            line-height: 1.2;
+        /* Fondo animado estilo arcade */
+        .arcade-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse at top, #1a1a3a 0%, #0a0a1a 70%),
+                linear-gradient(180deg, #0a0a1a 0%, #1a0a2a 100%);
         }
 
-        /* Utility */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        .text-gold {
-            color: var(--gold);
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
         }
 
-        .text-gray {
-            color: var(--gray-text);
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Header */
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+        .logo-container {
+            position: relative;
+            display: inline-block;
         }
 
-        @keyframes float {
+        .main-title {
+            font-size: clamp(24px, 6vw, 48px);
+            color: #fff;
+            text-shadow:
+                0 0 10px #ff00ff,
+                0 0 20px #ff00ff,
+                0 0 40px #ff00ff,
+                4px 4px 0 #00ffff,
+                -2px -2px 0 #ffff00;
+            animation: neonFlicker 3s infinite;
+            letter-spacing: 4px;
+        }
 
-            0%,
-            100% {
-                transform: translateY(0) rotate(-2deg);
-            }
+        .subtitle {
+            font-size: clamp(10px, 2vw, 14px);
+            color: #00ffff;
+            margin-top: 15px;
+            text-shadow: 0 0 10px #00ffff;
+            animation: pulse 2s infinite;
+        }
 
-            50% {
-                transform: translateY(-10px) rotate(-2deg);
-            }
+        @keyframes neonFlicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.8; }
+            94% { opacity: 1; }
+            95% { opacity: 0.9; }
+            96% { opacity: 1; }
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 0.4;
-            }
-
-            50% {
-                opacity: 0.8;
-            }
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
         }
 
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-
-            100% {
-                background-position: 200% 0;
-            }
+        /* Decoración arcade */
+        .arcade-decoration {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
         }
 
-        .animate-fade-in-up {
-            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            opacity: 0;
+        .coin {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+            box-shadow: 0 0 15px #ffd700;
         }
 
-        .delay-1 {
-            animation-delay: 0.1s;
+        @keyframes spin {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
         }
 
-        .delay-2 {
-            animation-delay: 0.2s;
+        /* Contenedor de juegos */
+        .games-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            justify-items: center;
         }
 
-        .delay-3 {
-            animation-delay: 0.3s;
+        /* Tarjeta de juego - Estilo caja de juego retro */
+        .game-card {
+            width: 100%;
+            max-width: 380px;
+            background: linear-gradient(180deg, #2a2a4a 0%, #1a1a3a 100%);
+            border: 6px solid #333;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        .delay-4 {
-            animation-delay: 0.4s;
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.7),
+                0 0 30px rgba(255, 0, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border-color: #ff00ff;
         }
 
-        .delay-5 {
-            animation-delay: 0.5s;
+        /* Portada del juego */
+        .game-cover {
+            width: 100%;
+            height: 280px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid #ff00ff;
         }
 
-        .delay-6 {
-            animation-delay: 0.6s;
+        .game-cover canvas {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
         }
 
-        /* Noise texture overlay */
-        .noise-overlay {
+        /* Badge de clasificación estilo ESRB retro */
+        .rating-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #000;
+            border: 2px solid #fff;
+            padding: 5px 8px;
+            font-size: 8px;
+            color: #fff;
+        }
+
+        /* Etiqueta NEW */
+        .new-badge {
+            position: absolute;
+            top: 10px;
+            left: -30px;
+            background: #ff0000;
+            color: #fff;
+            padding: 5px 40px;
+            font-size: 10px;
+            transform: rotate(-45deg);
+            box-shadow: 0 2px 10px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Info del juego */
+        .game-info {
+            padding: 20px;
+        }
+
+        .game-title {
+            font-size: 14px;
+            color: #ffd700;
+            text-shadow: 2px 2px 0 #8b4513;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .game-description {
+            font-size: 9px;
+            color: #aaa;
+            line-height: 2;
+            margin-bottom: 15px;
+        }
+
+        .game-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            font-size: 8px;
+            color: #00ffff;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Botón PLAY */
+        .play-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(180deg, #00ff00 0%, #00aa00 100%);
+            border: 4px solid #008800;
+            color: #000;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+        }
+
+        .play-btn:hover {
+            background: linear-gradient(180deg, #00ff88 0%, #00cc00 100%);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+            transform: scale(1.02);
+        }
+
+        .play-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Sección "Próximamente" */
+        .coming-soon {
+            text-align: center;
+            padding: 60px 20px;
+            border-top: 2px dashed #333;
+            margin-top: 40px;
+        }
+
+        .coming-soon h2 {
+            font-size: 18px;
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
+            margin-bottom: 20px;
+        }
+
+        .coming-soon p {
+            font-size: 10px;
+            color: #666;
+            line-height: 2;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 2px solid #222;
+            margin-top: 40px;
+        }
+
+        footer p {
+            font-size: 10px;
+            color: #444;
+            line-height: 2;
+        }
+
+        footer .credits {
+            color: #ff00ff;
+        }
+
+        /* Líneas de escaneo CRT */
+        .scanlines {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 9999;
-            opacity: 0.03;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-        }
-
-        /* ==================== HEADER ==================== */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
             z-index: 1000;
-            padding: 24px 0;
-            background: linear-gradient(to bottom, var(--black-deep), transparent);
-            transition: all 0.3s ease;
-        }
-
-        header.scrolled {
-            background: rgba(10, 10, 11, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 16px 0;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            color: var(--white-warm);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .logo:hover {
-            color: var(--gold);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 24px;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: var(--white-warm);
-            text-decoration: none;
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 15px;
-            letter-spacing: 0.05em;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover {
-            color: var(--gold);
-        }
-
-        .header-cta {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            padding: 12px 28px;
-            background: transparent;
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .header-cta:hover {
-            background: var(--gold);
-            color: var(--black-deep);
-        }
-
-        /* ==================== HERO ==================== */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 120px 24px 80px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(ellipse at 50% 0%, rgba(201, 169, 98, 0.08) 0%, transparent 60%);
-            pointer-events: none;
-        }
-
-        .hero-decorative {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            border: 1px solid var(--gray-mid);
-            border-radius: 50%;
-            opacity: 0.3;
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        .hero-decorative::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            height: 400px;
-            border: 1px solid var(--gray-mid);
-            border-radius: 50%;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-        }
-
-        .hero-eyebrow {
-            font-size: 14px;
-            font-weight: 500;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: 32px;
-        }
-
-        .hero h1 {
-            font-size: clamp(40px, 7vw, 72px);
-            font-weight: 500;
-            margin-bottom: 28px;
-            letter-spacing: -0.02em;
-        }
-
-        .hero h1 em {
-            font-style: italic;
-            color: var(--gold);
-        }
-
-        .hero-subtitle {
-            font-size: clamp(20px, 3vw, 26px);
-            color: var(--gray-text);
-            margin-bottom: 48px;
-            font-style: italic;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            padding: 20px 48px;
-            background: var(--gold);
-            border: none;
-            color: var(--black-deep);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .hero-cta:hover {
-            background: var(--gold-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(201, 169, 98, 0.3);
-        }
-
-        .hero-meta {
-            margin-top: 32px;
-            font-size: 15px;
-            color: var(--gray-text);
-            letter-spacing: 0.05em;
-        }
-
-        .hero-meta span {
-            margin: 0 12px;
-            opacity: 0.5;
-        }
-
-        .scroll-indicator {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            color: var(--gray-text);
-            font-size: 13px;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            animation: fadeIn 1s ease 1.5s forwards;
-            opacity: 0;
-        }
-
-        .scroll-indicator::after {
-            content: '';
-            width: 1px;
-            height: 40px;
-            background: linear-gradient(to bottom, var(--gold), transparent);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        /* ==================== SECTIONS ==================== */
-        section {
-            padding: 120px 0;
-            position: relative;
-        }
-
-        .section-label {
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: 24px;
-            display: block;
-        }
-
-        .section-title {
-            font-size: clamp(32px, 5vw, 48px);
-            margin-bottom: 24px;
-        }
-
-        .section-subtitle {
-            font-size: 22px;
-            color: var(--gray-text);
-            font-style: italic;
-            max-width: 600px;
-        }
-
-        /* ==================== CONCEPTO ==================== */
-        .concepto {
-            background: linear-gradient(to bottom, var(--black-deep), var(--gray-dark), var(--black-deep));
-        }
-
-        .concepto-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: center;
-        }
-
-        .concepto-text p {
-            font-size: 20px;
-            margin-bottom: 24px;
-            color: var(--gray-text);
-        }
-
-        .concepto-text p:first-of-type {
-            font-size: 24px;
-            color: var(--white-warm);
-        }
-
-        .concepto-visual {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .book-preview {
-            width: 280px;
-            height: 400px;
-            background: linear-gradient(135deg, #4a4a4a 0%, #2d2d2d 100%);
-            border-radius: 4px 12px 12px 4px;
-            box-shadow:
-                -20px 20px 60px rgba(0, 0, 0, 0.5),
-                inset 1px 0 0 rgba(255, 255, 255, 0.1);
-            position: relative;
-            transform: rotate(-2deg);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .book-preview::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 20px;
-            background: linear-gradient(to right, rgba(0, 0, 0, 0.3), transparent);
-            border-radius: 4px 0 0 4px;
-        }
-
-        .book-preview::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60%;
-            height: 1px;
-            background: var(--gold);
-            opacity: 0.5;
-        }
-
-        .book-title {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-
-        .book-title h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 32px;
-            font-weight: 500;
-            letter-spacing: 0.15em;
-            color: var(--gold);
-            margin-bottom: 16px;
-        }
-
-        .book-title p {
-            font-size: 14px;
-            color: var(--gray-text);
-            letter-spacing: 0.1em;
-        }
-
-        /* ==================== CÓMO FUNCIONA ==================== */
-        .como-funciona {
-            background: var(--black-deep);
-        }
-
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 48px;
-            margin-top: 80px;
-        }
-
-        .step {
-            padding: 48px 40px;
-            background: var(--gray-dark);
-            border: 1px solid var(--gray-mid);
-            position: relative;
-            transition: all 0.4s ease;
-        }
-
-        .step:hover {
-            border-color: var(--gold);
-            transform: translateY(-4px);
-        }
-
-        .step-number {
-            position: absolute;
-            top: -20px;
-            left: 40px;
-            font-family: 'Playfair Display', serif;
-            font-size: 64px;
-            font-weight: 600;
-            color: var(--gold);
-            opacity: 0.3;
-            line-height: 1;
-        }
-
-        .step h3 {
-            font-size: 28px;
-            margin-bottom: 20px;
-            margin-top: 24px;
-        }
-
-        .step p {
-            color: var(--gray-text);
-            font-size: 18px;
-        }
-
-        /* ==================== CAPÍTULOS ==================== */
-        .capitulos {
-            background: linear-gradient(to bottom, var(--black-deep), var(--gray-dark));
-        }
-
-        .capitulos-header {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto 80px;
-        }
-
-        .chapters-list {
-            display: grid;
-            gap: 2px;
-            background: var(--gray-mid);
-            border: 1px solid var(--gray-mid);
-        }
-
-        .chapter {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 32px;
-            padding: 32px 40px;
-            background: var(--gray-dark);
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .chapter:hover {
-            background: rgba(201, 169, 98, 0.05);
-        }
-
-        .chapter-num {
-            font-family: 'Playfair Display', serif;
-            font-size: 14px;
-            color: var(--gold);
-            font-weight: 500;
-            letter-spacing: 0.1em;
-            width: 120px;
-            white-space: nowrap;
-        }
-
-        .chapter-content h4 {
-            font-size: 22px;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .chapter-content p {
-            color: var(--gray-text);
-            font-size: 17px;
-        }
-
-        /* ==================== EJEMPLO ==================== */
-        .ejemplo {
-            background: var(--gray-dark);
-            overflow: hidden;
-        }
-
-        .ejemplo-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 80px;
-            align-items: center;
-        }
-
-        .page-mockup {
-            background: #f8f7f4;
-            color: #1a1a1a;
-            padding: 60px 50px;
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 17px;
-            line-height: 1.9;
-            position: relative;
-            box-shadow:
-                0 25px 80px rgba(0, 0, 0, 0.4),
-                0 0 0 1px rgba(0, 0, 0, 0.1);
-            transform: rotate(1deg);
-            max-width: 480px;
-        }
-
-        .page-mockup::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 60px;
-            background: linear-gradient(to right, rgba(0, 0, 0, 0.05), transparent);
-        }
-
-        .page-mockup p {
-            margin-bottom: 20px;
-            text-indent: 2em;
-        }
-
-        .page-mockup p:first-child {
-            text-indent: 0;
-        }
-
-        .page-mockup em {
-            font-style: italic;
-        }
-
-        .page-number {
-            position: absolute;
-            bottom: 30px;
-            right: 50px;
-            font-size: 14px;
-            color: #999;
-        }
-
-        .ejemplo-note {
-            margin-top: 40px;
-            padding: 24px;
-            border-left: 2px solid var(--gold);
-            background: rgba(201, 169, 98, 0.05);
-        }
-
-        .ejemplo-note p {
-            font-size: 16px;
-            color: var(--gray-text);
-            font-style: italic;
-        }
-
-        /* ==================== PARA QUIÉN ==================== */
-        .para-quien {
-            background: var(--black-deep);
-        }
-
-        .para-quien-grid {
-            margin-top: 60px;
-            /* Changed to grid cards */
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-        }
-
-        .para-quien-list {
-            display: contents;
-            /* Allow Li items to be grid children */
-            list-style: none;
-        }
-
-        .para-quien-list li {
-            background: var(--gray-dark);
-            border: 1px solid var(--gray-mid);
-            padding: 40px 32px;
-            font-size: 18px;
-            line-height: 1.6;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .para-quien-list li:hover {
-            border-color: var(--gold);
-            transform: translateY(-4px);
-            background: linear-gradient(to bottom, var(--gray-dark), #1F1F22);
-        }
-
-        .para-quien-list li::before {
-            content: '✦';
-            /* Premium diamond symbol */
-            color: var(--gold);
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        /* Removed old disclaimer box styles as it was unused/hidden */
-
-        .disclaimer-box h4 {
-            font-size: 18px;
-            margin-bottom: 16px;
-            color: var(--gold);
-        }
-
-        .disclaimer-box p {
-            color: var(--gray-text);
-            font-size: 17px;
-            line-height: 1.6;
-        }
-
-        /* ==================== PRECIO ==================== */
-        .precio {
-            background: linear-gradient(to bottom, var(--black-deep), var(--gray-dark));
-            text-align: center;
-        }
-
-        .precio-box {
-            max-width: 600px;
-            margin: 60px auto 0;
-            padding: 60px;
-            background: var(--gray-dark);
-            border: 1px solid var(--gold);
-            position: relative;
-        }
-
-        .precio-box::before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background: var(--gold);
-        }
-
-        .precio-amount {
-            font-family: 'Playfair Display', serif;
-            font-size: 72px;
-            font-weight: 600;
-            color: var(--white-warm);
-            margin-bottom: 8px;
-        }
-
-        .precio-amount span {
-            font-size: 32px;
-            vertical-align: super;
-        }
-
-        .precio-desc {
-            font-size: 20px;
-            color: var(--gray-text);
-            margin-bottom: 40px;
-        }
-
-        .precio-features {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            text-align: left;
-            margin-bottom: 40px;
-        }
-
-        .precio-feature {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 16px;
-            color: var(--gray-text);
-        }
-
-        .precio-feature svg {
-            width: 20px;
-            height: 20px;
-            color: var(--gold);
-            flex-shrink: 0;
-        }
-
-        /* ==================== WAITING LIST ==================== */
-        .waiting-list {
-            background: var(--black-deep);
-            padding: 160px 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .waiting-list::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 400px;
-            background: radial-gradient(ellipse at 50% 100%, rgba(201, 169, 98, 0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .waiting-list-content {
-            position: relative;
-            z-index: 1;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .waiting-list h2 {
-            font-size: clamp(36px, 5vw, 56px);
-            margin-bottom: 24px;
-        }
-
-        .waiting-list-subtitle {
-            font-size: 22px;
-            color: var(--gray-text);
-            margin-bottom: 48px;
-            font-style: italic;
-        }
-
-        .form-container {
-            display: flex;
-            gap: 16px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .form-container input {
-            flex: 1;
-            padding: 20px 24px;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 18px;
-            background: var(--gray-dark);
-            border: 1px solid var(--gray-mid);
-            color: var(--white-warm);
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-container input::placeholder {
-            color: var(--gray-text);
-        }
-
-        .form-container input:focus {
-            border-color: var(--gold);
-        }
-
-        .form-container button {
-            padding: 20px 36px;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 16px;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            background: var(--gold);
-            border: none;
-            color: var(--black-deep);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .form-container button:hover {
-            background: var(--gold-hover);
-        }
-
-        .form-note {
-            margin-top: 20px;
-            font-size: 14px;
-            color: var(--gray-text);
-        }
-
-        .social-proof {
-            margin-top: 48px;
-            padding-top: 48px;
-            border-top: 1px solid var(--gray-mid);
-        }
-
-        .social-proof-number {
-            font-family: 'Playfair Display', serif;
-            font-size: 48px;
-            color: var(--gold);
-            margin-bottom: 8px;
-        }
-
-        .social-proof-text {
-            font-size: 16px;
-            color: var(--gray-text);
-            letter-spacing: 0.05em;
-        }
-
-        /* Admin Link for Demo */
-        .admin-link {
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1) 0px,
+                rgba(0, 0, 0, 0.1) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+
+        /* Efecto CRT en las esquinas */
+        .crt-effect {
             position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-size: 12px;
-            color: var(--gray-mid);
-            text-decoration: none;
-            cursor: pointer;
-            z-index: 9999;
-            opacity: 0.2;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%);
         }
 
-        .admin-link:hover {
-            opacity: 1;
-            color: var(--gold);
+        /* High Scores decorativo */
+        .high-scores {
+            max-width: 400px;
+            margin: 40px auto;
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid #ffd700;
+            padding: 20px;
+            text-align: center;
         }
 
-        /* ==================== FOOTER ==================== */
-        footer {
-            padding: 60px 0;
-            background: var(--black-deep);
-            border-top: 1px solid var(--gray-mid);
+        .high-scores h3 {
+            color: #ffd700;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ffd700;
         }
 
-        .footer-content {
+        .score-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #333;
+            font-size: 10px;
         }
 
-        .footer-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            color: var(--white-warm);
+        .score-row .name { color: #00ffff; }
+        .score-row .score { color: #ff00ff; }
+
+        /* Joystick animado decorativo */
+        .joystick-decoration {
+            text-align: center;
+            font-size: 40px;
+            margin: 20px 0;
+            animation: joystickMove 1s infinite;
         }
 
-        .footer-links {
-            display: flex;
-            gap: 32px;
+        @keyframes joystickMove {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
-        .footer-links a {
-            color: var(--gray-text);
-            text-decoration: none;
-            font-size: 15px;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--gold);
-        }
-
-        .footer-social {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-social a {
-            color: var(--gray-text);
-            transition: color 0.3s ease;
-        }
-
-        .footer-social a:hover {
-            color: var(--gold);
-        }
-
-        .footer-social svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        /* ==================== RESPONSIVE ==================== */
-        @media (max-width: 1024px) {
-
-            .concepto-grid,
-            .ejemplo-grid,
-            .para-quien-grid {
+        /* Responsive */
+        @media (max-width: 768px) {
+            .games-container {
                 grid-template-columns: 1fr;
-                gap: 60px;
+                padding: 10px;
             }
 
-            .steps-grid {
-                grid-template-columns: 1fr;
-                gap: 32px;
-            }
-
-            .concepto-visual {
-                order: -1;
-            }
-
-            .book-preview {
-                width: 240px;
-                height: 340px;
-            }
-
-            .page-mockup {
-                transform: none;
+            .game-card {
                 max-width: 100%;
             }
-        }
 
-        @media (max-width: 640px) {
-            body {
-                font-size: 17px;
-            }
-
-            section {
-                padding: 80px 0;
-            }
-
-            .header-cta {
-                display: none;
-            }
-
-            .hero {
-                padding: 100px 20px 60px;
-            }
-
-            .hero-decorative {
-                width: 300px;
-                height: 300px;
-            }
-
-            .hero-decorative::before {
-                width: 200px;
-                height: 200px;
-            }
-
-            .step {
-                padding: 40px 28px;
-            }
-
-            .chapter {
-                grid-template-columns: 1fr;
-                gap: 12px;
-                padding: 24px;
-            }
-
-            .chapter-num {
-                width: auto;
-            }
-
-            .precio-box {
-                padding: 40px 24px;
-            }
-
-            .precio-amount {
-                font-size: 56px;
-            }
-
-            .precio-features {
-                grid-template-columns: 1fr;
-            }
-
-            .form-container {
-                flex-direction: column;
-            }
-
-            .form-container button {
-                width: 100%;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                gap: 32px;
-                text-align: center;
-            }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 16px;
+            header {
+                padding: 20px 10px;
             }
         }
 
-        /* Scroll animations observer */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        /* INSERT COIN animation */
+        .insert-coin {
+            text-align: center;
+            margin: 30px 0;
         }
 
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .insert-coin span {
+            font-size: 16px;
+            color: #ffd700;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
     </style>
 </head>
-
 <body>
-    <div class="noise-overlay"></div>
+    <div class="arcade-bg"></div>
+    <div class="stars" id="stars"></div>
+    <div class="scanlines"></div>
+    <div class="crt-effect"></div>
 
-    <!-- Header -->
-    <header id="header">
-        <div class="container">
-            <div class="header-content">
-                <a href="#" class="logo">CARONTE</a>
-                <div class="header-actions">
-                    <a href="login.html" class="nav-link">Acceder</a>
-                    <a href="register.html" class="nav-link">Regístrate</a>
-                    <button class="header-cta"
-                        onclick="document.getElementById('waiting').scrollIntoView({behavior: 'smooth'})">
-                        Unirme a la lista
-                    </button>
-                </div>
-            </div>
+    <header>
+        <div class="logo-container">
+            <h1 class="main-title">LOS JUEGOS DE LEO</h1>
+        </div>
+        <p class="subtitle">MIS JUEGOS PREFES CREADOS PARA MI Y MIS AMIGOS</p>
+
+        <div class="arcade-decoration">
+            <div class="coin"></div>
+            <div class="coin" style="animation-delay: 0.3s;"></div>
+            <div class="coin" style="animation-delay: 0.6s;"></div>
+        </div>
+
+        <div class="insert-coin">
+            <span>- PULSA PARA JUGAR -</span>
         </div>
     </header>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-decorative"></div>
-        <div class="hero-content">
-            <p class="hero-eyebrow animate-fade-in-up">La nueva literatura del futuro</p>
-            <h1 class="animate-fade-in-up delay-1">
-                Tu yo de dentro de 25 años<br>
-                <em>tiene algo que decirte.</em>
-            </h1>
-            <p class="hero-subtitle animate-fade-in-up delay-2">
-                Responde 40 preguntas. Recibe un libro único, escrito solo para ti, desde tu propio futuro.
-            </p>
-            <a href="#waiting" class="hero-cta animate-fade-in-up delay-3">
-                Quiero mi libro
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-            </a>
-            <p class="hero-meta animate-fade-in-up delay-4">
-                Lanzamiento febrero 2026 <span>·</span> 29,99€ <span>·</span> Envío a toda Europa
-            </p>
-        </div>
-        <div class="scroll-indicator">
-            <span>Descubre más</span>
-        </div>
-    </section>
-
-    <!-- Concepto -->
-    <section class="concepto">
-        <div class="container">
-            <div class="concepto-grid">
-                <div class="concepto-text reveal">
-                    <span class="section-label">El Concepto</span>
-                    <h2 class="section-title">No es predicción.<br>Es preparación.</h2>
-                    <p>
-                        Caronte adapta el scenario planning —metodología usada por Shell, el MIT o el World Economic
-                        Forum para anticipar futuros inciertos— a escala individual.
-                    </p>
-                    <p>
-                        Las 40 preguntas extraen tus variables críticas: patrones de decisión, tensiones no resueltas,
-                        valores nucleares, dinámicas relacionales. Un modelo de razonamiento avanzado (LRM) cruza estas
-                        variables para generar escenarios estadísticamente consistentes con quien eres.
-                    </p>
-                    <p>
-                        El resultado no es un informe. Es una narrativa. Porque tu cerebro no cambia con datos: cambia
-                        con historias.
-                    </p>
-                </div>
-                <div class="concepto-visual reveal">
-                    <div class="book-preview">
-                        <div class="book-title">
-                            <h3>CARONTE</h3>
-                            <p>Néstor Guerra</p>
-                        </div>
-                    </div>
-                </div>
+    <main class="games-container">
+        <!-- Juego 1: Aventura de Leo -->
+        <article class="game-card">
+            <div class="game-cover">
+                <canvas id="cover1" width="380" height="280"></canvas>
+                <div class="new-badge">NEW!</div>
+                <div class="rating-badge">TODOS</div>
             </div>
-        </div>
-    </section>
-
-    <!-- Cómo Funciona -->
-    <section class="como-funciona">
-        <div class="container">
-            <div style="text-align: center; max-width: 600px; margin: 0 auto;" class="reveal">
-                <span class="section-label">Cómo funciona</span>
-                <h2 class="section-title">Tres pasos. Un libro que solo existe para ti.</h2>
-            </div>
-            <div class="steps-grid">
-                <div class="step reveal">
-                    <span class="step-number">01</span>
-                    <h3>Responde</h3>
-                    <p>40 preguntas sobre tu vida, tus miedos, tus relaciones, tu trabajo y tus sueños. Sin prisas.
-                        Tómate el tiempo que necesites.</p>
-                </div>
-                <div class="step reveal">
-                    <span class="step-number">02</span>
-                    <h3>Espera</h3>
-                    <p>En 7 días, tu libro se imprime y sale hacia tu dirección. Tapa blanda premium, diseño
-                        minimalista, tu nombre en la cubierta.</p>
-                </div>
-                <div class="step reveal">
-                    <span class="step-number">03</span>
-                    <h3>Lee</h3>
-                    <p>Recibe la carta más importante que jamás te escribirán. Y decide qué hacer con lo que descubras.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Capítulos -->
-    <section class="capitulos">
-        <div class="container">
-            <div class="capitulos-header reveal">
-                <span class="section-label">Contenido</span>
-                <h2 class="section-title">Un libro de 5 capítulos. Todos sobre ti.</h2>
-                <p class="section-subtitle">Cada libro es único. Dos personas nunca recibirán el mismo contenido.</p>
-            </div>
-            <div class="chapters-list reveal">
-                <div class="chapter">
-                    <span class="chapter-num">Capítulo I</span>
-                    <div class="chapter-content">
-                        <h4>El extraño que creías conocer</h4>
-                        <p>Quién eras realmente a los 30 y por qué esa versión de ti, vista desde el futuro, parece un
-                            completo desconocido lleno de miedos infundados.</p>
-                    </div>
-                </div>
-                <div class="chapter">
-                    <span class="chapter-num">Capítulo II</span>
-                    <div class="chapter-content">
-                        <h4>La decisión que lo cambió todo</h4>
-                        <p>Y las tres que fingiste no tomar, creyendo ingenuamente que la inacción te salvaría de las
-                            consecuencias que hoy pagamos.</p>
-                    </div>
-                </div>
-                <div class="chapter">
-                    <span class="chapter-num">Capítulo III</span>
-                    <div class="chapter-content">
-                        <h4>Los que merecían más de ti</h4>
-                        <p>Un recuento brutal sobre el amor y sus deudas, y la lista de nombres que borraste de tu vida
-                            por puro orgullo.</p>
-                    </div>
-                </div>
-                <div class="chapter">
-                    <span class="chapter-num">Capítulo IV</span>
-                    <div class="chapter-content">
-                        <h4>El tiempo que tiraste a la basura</h4>
-                        <p>Años que no van a volver, disueltos en distracciones vacías y batallas que nunca fueron
-                            realmente tuyas.</p>
-                    </div>
-                </div>
-                <div class="chapter">
-                    <span class="chapter-num">Capítulo V</span>
-                    <div class="chapter-content">
-                        <h4>Esto no es un consejo. Es una súplica.</h4>
-                        <p>Lo que necesito que hagas por los dos urgentemente, antes de que el peso del arrepentimiento
-                            sea la única herencia que nos quede.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Ejemplo -->
-    <section class="ejemplo">
-        <div class="container">
-            <div class="ejemplo-grid">
-                <div class="reveal">
-                    <span class="section-label">Un fragmento</span>
-                    <h2 class="section-title">Así suena tu futuro hablándote.</h2>
-                    <div class="ejemplo-note">
-                        <p>Este es un ejemplo ilustrativo. Tu libro será completamente diferente, basado únicamente en
-                            tus respuestas.</p>
-                    </div>
-                </div>
-                <div class="page-mockup reveal">
-                    <p><em>Tenías 34 años cuando dejaste ese trabajo que odiabas. Recuerdo el miedo. Recuerdo las noches
-                            sin dormir, calculando cuántos meses podías aguantar sin ingresos. Recuerdo a mamá
-                            diciéndote que estabas loco.</em></p>
-                    <p>Pero también recuerdo lo que vino después.</p>
-                    <p>No te voy a decir si fue la decisión correcta. Eso ya lo sabrás cuando llegues aquí. Lo que sí
-                        puedo decirte es esto: el miedo que sientes ahora no es una señal de que vayas a fracasar. Es
-                        una señal de que lo que estás a punto de hacer importa.</p>
-                    <p><em>Las cosas que no importan no dan miedo.</em></p>
-                    <span class="page-number">47</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Para Quién -->
-    <section class="para-quien">
-        <div class="container">
-            <div class="reveal">
-                <span class="section-label">Para quién es</span>
-                <h2 class="section-title">Caronte es para ti si...</h2>
-            </div>
-            <div class="para-quien-grid">
-                <ul class="para-quien-list reveal">
-                    <li>Estás en un momento de transición y necesitas claridad</li>
-                    <li>Sientes que tomas decisiones sin una brújula clara</li>
-                    <li>Quieres entenderte mejor, sin filtros ni autoengaños</li>
-                    <li>Buscas una herramienta de reflexión profunda, no consejos genéricos</li>
-                    <li>Crees que la mejor versión de ti mismo ya sabe lo que deberías hacer</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- Precio -->
-    <section class="precio">
-        <div class="container">
-            <div class="reveal">
-                <span class="section-label">Inversión</span>
-                <h2 class="section-title">Un libro. Tuyo para siempre.</h2>
-            </div>
-            <div class="precio-box reveal">
-                <div class="precio-amount">29<span>,99€</span></div>
-                <p class="precio-desc">Sin suscripciones. Un pago único.</p>
-                <div class="precio-features">
-                    <div class="precio-feature">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        <span>Tapa blanda premium, 15×23 cm</span>
-                    </div>
-                    <div class="precio-feature">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        <span>80-120 páginas personalizadas</span>
-                    </div>
-                    <div class="precio-feature">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        <span>Tu nombre en la cubierta</span>
-                    </div>
-                    <div class="precio-feature">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        <span>Envío 5-7 días (España y Europa)</span>
-                    </div>
-                </div>
-                <p class="text-gray" style="font-size: 15px;">
-                    Próximamente: tapa dura (+12€) · segunda copia (+19,99€) · PDF inmediato (+4,99€)
+            <div class="game-info">
+                <h2 class="game-title">LA AVENTURA DE LEO</h2>
+                <p class="game-description">
+                    Explora un mundo estilo Minecraft. Esquiva esqueletos,
+                    recoge monedas y encuentra el tesoro legendario.
+                    ¡Diseñado por Leo!
                 </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Waiting List -->
-    <section class="waiting-list" id="waiting">
-        <div class="container">
-            <div class="waiting-list-content reveal">
-                <h2>Sé de los primeros en recibir el tuyo.</h2>
-                <p class="waiting-list-subtitle">
-                    Lanzamos en febrero de 2026. Los primeros 500 de la lista tendrán acceso anticipado y un 20% de
-                    descuento.
-                </p>
-                <form class="form-container" onsubmit="handleSubmit(event)">
-                    <input type="email" placeholder="tu@email.com" required id="email-input">
-                    <button type="submit">Unirme</button>
-                </form>
-                <p class="form-note">Sin spam. Solo te escribiremos cuando abramos el acceso.</p>
-                <div class="social-proof">
-                    <div id="counter" class="social-proof-number reveal">+35.000</div>
-                    <p class="social-proof-text reveal">personas ya esperan su libro</p>
+                <div class="game-meta">
+                    <span class="meta-item">🎮 1 JUGADOR</span>
+                    <span class="meta-item">⚔️ AVENTURA</span>
+                    <span class="meta-item">💀 ESQUELETOS</span>
                 </div>
+                <a href="leo-minecraft-adventure.html" class="play-btn">▶ JUGAR</a>
             </div>
+        </article>
+
+        <!-- Juego 2: Acrópolis -->
+        <article class="game-card">
+            <div class="game-cover">
+                <canvas id="cover2" width="380" height="280"></canvas>
+                <div class="rating-badge">TODOS</div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">TESORO EN LA ACRÓPOLIS</h2>
+                <p class="game-description">
+                    Una familia de 6 viaja a Grecia en busca del Tesoro de Atenea.
+                    Elige tu héroe, derrota guardianes y explora el Partenón.
+                </p>
+                <div class="game-meta">
+                    <span class="meta-item">🎮 1 JUGADOR</span>
+                    <span class="meta-item">👨‍👩‍👧‍👦 6 PERSONAJES</span>
+                    <span class="meta-item">🏛️ 5 NIVELES</span>
+                </div>
+                <a href="acropolis-treasure-hunt.html" class="play-btn">▶ JUGAR</a>
+            </div>
+        </article>
+
+        <!-- Juego 3: Leo vs Reyes Magos -->
+        <article class="game-card">
+            <div class="game-cover">
+                <canvas id="cover3" width="380" height="280"></canvas>
+                <div class="new-badge">NEW!</div>
+                <div class="rating-badge">TODOS</div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">LEO VS REYES MAGOS</h2>
+                <p class="game-description">
+                    ¡Estilo Pacman! Los Reyes Magos persiguen a Leo.
+                    Recoge regalos, usa el carbón para asustarlos
+                    y escapa con todos los regalos.
+                </p>
+                <div class="game-meta">
+                    <span class="meta-item">🎮 1 JUGADOR</span>
+                    <span class="meta-item">👑 3 REYES</span>
+                    <span class="meta-item">🎁 PACMAN</span>
+                </div>
+                <a href="leo-vs-reyes-magos.html" class="play-btn">▶ JUGAR</a>
+            </div>
+        </article>
+
+        <!-- Juego 4: Leo Racing -->
+        <article class="game-card">
+            <div class="game-cover">
+                <canvas id="cover4" width="380" height="280"></canvas>
+                <div class="new-badge">NEW!</div>
+                <div class="rating-badge">TODOS</div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">LEO RACING</h2>
+                <p class="game-description">
+                    Carreras arcade en primera persona estilo años 90.
+                    Circuito Costa del Sol, 5 coches, curvas y colinas.
+                    ¡Usa el turbo para ganar!
+                </p>
+                <div class="game-meta">
+                    <span class="meta-item">🎮 1 JUGADOR</span>
+                    <span class="meta-item">🏎️ 5 COCHES</span>
+                    <span class="meta-item">🏁 3 VUELTAS</span>
+                </div>
+                <a href="leo-racing.html" class="play-btn">▶ JUGAR</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- High Scores decorativo -->
+    <section class="high-scores">
+        <h3>🏆 HIGH SCORES 🏆</h3>
+        <div class="score-row">
+            <span class="name">1. LEO</span>
+            <span class="score">999,999</span>
+        </div>
+        <div class="score-row">
+            <span class="name">2. ALMA</span>
+            <span class="score">850,000</span>
+        </div>
+        <div class="score-row">
+            <span class="name">3. GUILLE</span>
+            <span class="score">720,000</span>
+        </div>
+        <div class="score-row">
+            <span class="name">4. GABRIEL</span>
+            <span class="score">680,000</span>
+        </div>
+        <div class="score-row">
+            <span class="name">5. PAPÁ</span>
+            <span class="score">500,000</span>
         </div>
     </section>
 
-    <!-- Footer -->
+    <div class="joystick-decoration">🕹️</div>
+
+    <!-- Próximamente -->
+    <section class="coming-soon">
+        <h2>🚀 PRÓXIMAMENTE 🚀</h2>
+        <p>Más juegos en camino...<br>¡Vuelve pronto!</p>
+    </section>
+
     <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">CARONTE</div>
-                <div class="footer-links">
-                    <a href="#">Política de privacidad</a>
-                    <a href="#">Términos y condiciones</a>
-                </div>
-                <div class="footer-social">
-                    <a href="#" aria-label="Twitter">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                        </svg>
-                    </a>
-                    <a href="#" aria-label="Instagram">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                        </svg>
-                    </a>
-                    <a href="#" aria-label="LinkedIn">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
+        <p>
+            <span class="credits">LOS JUEGOS DE LEO</span><br><br>
+            2026 - Papa me ha ayudado con mucho ❤️<br><br>
+            🎮 BEST PLAYED WITH KEYBOARD 🎮
+        </p>
     </footer>
 
-    <a onclick="downloadCSV()" class="admin-link">Admin: Descargar CSV</a>
-
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        // Init EmailJS (Replace with your public key)
-        (function () {
-            // TUTORIAL: https://dashboard.emailjs.com/
-            // 1. Create account
-            // 2. Add Service (Gmail) -> Service ID
-            // 3. Add Template -> Template ID
-            // 4. Get Public Key from Account
-            emailjs.init("P0YKi7DlsATK9Tx-W");
-        })();
-    </script>
-    <script>
-        // --- Logic Modified for Persistence and CSV ---
-
-        // Configuration
-        const CONFIG = {
-            API_URL: 'http://localhost:3000',
-            LIST_KEY: 'caronte_waiting_list_v1',
-            BASE_COUNT: 1247
-        };
-
-        // Email Sending Function
-        async function sendConfirmationEmail(userEmail) {
-            try {
-                // Replace these with your actual EmailJS IDs
-                const SERVICE_ID = 'service_mz3zd0q';
-                // Asegúrate de que este ID sea EXACTAMENTE el que tienes en EmailJS
-                // Si creaste el template, en la URL suele poner su ID o en la lista.
-                const TEMPLATE_ID = 'template_caronte';
-
-                const response = await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-                    to_email: userEmail,
-                    reply_to: 'info@caronte.com'
-                });
-                console.log('Email sent successfully', response);
-                alert('✅ Correo ENVIADO a ' + userEmail + '\n(Revísalo ya)');
-            } catch (error) {
-                console.error('Email send failed', error);
-                alert('❌ Error: ' + JSON.stringify(error));
+        // Generar estrellas
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = (Math.random() * 3 + 1) + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
             }
         }
+        createStars();
 
-        // Header scroll effect
-        const header = document.getElementById('header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
+        // ===== PORTADA 1: La Aventura de Leo =====
+        function drawCover1() {
+            const canvas = document.getElementById('cover1');
+            const ctx = canvas.getContext('2d');
+
+            // Fondo cielo nocturno
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#1a1a3a');
+            gradient.addColorStop(0.5, '#2a3a5a');
+            gradient.addColorStop(1, '#1a4a2a');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Luna
+            ctx.fillStyle = '#f0f0f0';
+            ctx.beginPath();
+            ctx.arc(320, 60, 35, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#1a1a3a';
+            ctx.beginPath();
+            ctx.arc(335, 50, 30, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Estrellas
+            ctx.fillStyle = '#fff';
+            for (let i = 0; i < 30; i++) {
+                ctx.fillRect(Math.random() * canvas.width, Math.random() * 150, 2, 2);
             }
-        });
 
-        // Scroll reveal animations
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
+            // Suelo
+            ctx.fillStyle = '#22c55e';
+            ctx.fillRect(0, 200, canvas.width, 80);
+            ctx.fillStyle = '#16a34a';
+            for (let i = 0; i < 50; i++) {
+                ctx.fillRect(i * 15 + 5, 200, 3, 10);
+            }
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+            // Templo de fondo
+            ctx.fillStyle = '#d4c4a8';
+            ctx.fillRect(250, 120, 100, 80);
+            ctx.fillStyle = '#c4b498';
+            ctx.beginPath();
+            ctx.moveTo(240, 120);
+            ctx.lineTo(300, 70);
+            ctx.lineTo(360, 120);
+            ctx.closePath();
+            ctx.fill();
+            // Columnas
+            ctx.fillStyle = '#e8dcc8';
+            for (let i = 0; i < 4; i++) {
+                ctx.fillRect(260 + i * 25, 130, 12, 50);
+            }
+
+            // Esqueleto enemigo
+            ctx.fillStyle = '#f5f5dc';
+            // Cráneo
+            ctx.beginPath();
+            ctx.arc(100, 170, 15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#000';
+            ctx.fillRect(92, 165, 6, 8);
+            ctx.fillRect(102, 165, 6, 8);
+            ctx.fillRect(95, 178, 10, 4);
+            // Cuerpo
+            ctx.fillStyle = '#f5f5dc';
+            ctx.fillRect(97, 185, 6, 30);
+            for (let i = 0; i < 3; i++) {
+                ctx.fillRect(85, 190 + i * 8, 30, 3);
+            }
+            ctx.fillRect(90, 215, 5, 25);
+            ctx.fillRect(105, 215, 5, 25);
+            // Arco
+            ctx.strokeStyle = '#8b4513';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(120, 195, 18, -Math.PI/2, Math.PI/2);
+            ctx.stroke();
+
+            // Personaje de Leo (Minecraft style)
+            const px = 190, py = 180;
+            // Cuerpo
+            ctx.fillStyle = '#3b82f6';
+            ctx.fillRect(px - 10, py, 20, 35);
+            // Cabeza cuadrada
+            ctx.fillStyle = '#fcd9b6';
+            ctx.fillRect(px - 14, py - 28, 28, 26);
+            // Pelo
+            ctx.fillStyle = '#78350f';
+            ctx.fillRect(px - 14, py - 28, 28, 8);
+            // Ojos cuadrados
+            ctx.fillStyle = '#000';
+            ctx.fillRect(px - 9, py - 18, 6, 6);
+            ctx.fillRect(px + 3, py - 18, 6, 6);
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(px - 8, py - 17, 2, 2);
+            ctx.fillRect(px + 4, py - 17, 2, 2);
+            // Piernas
+            ctx.fillStyle = '#1e40af';
+            ctx.fillRect(px - 8, py + 35, 7, 15);
+            ctx.fillRect(px + 1, py + 35, 7, 15);
+            // Espada
+            ctx.fillStyle = '#9ca3af';
+            ctx.fillRect(px + 18, py - 10, 5, 35);
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(px + 15, py + 20, 11, 6);
+
+            // Cofre del tesoro
+            ctx.fillStyle = '#92400e';
+            ctx.fillRect(50, 220, 45, 28);
+            ctx.fillStyle = '#b45309';
+            ctx.beginPath();
+            ctx.moveTo(48, 220);
+            ctx.quadraticCurveTo(72, 200, 97, 220);
+            ctx.fill();
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(48, 218, 49, 5);
+            ctx.beginPath();
+            ctx.arc(72, 235, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Monedas flotantes
+            const time = Date.now() / 500;
+            for (let i = 0; i < 5; i++) {
+                const cx = 50 + i * 70;
+                const cy = 100 + Math.sin(time + i) * 10;
+                ctx.fillStyle = '#fbbf24';
+                ctx.beginPath();
+                ctx.arc(cx, cy, 10, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Título
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 240, canvas.width, 40);
+            ctx.fillStyle = '#4ade80';
+            ctx.font = 'bold 20px "Press Start 2P", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('LA AVENTURA', canvas.width/2, 262);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 14px "Press Start 2P", monospace';
+            ctx.fillText('DE LEO', canvas.width/2, 278);
+        }
+
+        // ===== PORTADA 2: Tesoro en la Acrópolis =====
+        function drawCover2() {
+            const canvas = document.getElementById('cover2');
+            const ctx = canvas.getContext('2d');
+
+            // Fondo atardecer griego
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#ff6b35');
+            gradient.addColorStop(0.3, '#f7931e');
+            gradient.addColorStop(0.6, '#ffd700');
+            gradient.addColorStop(1, '#87ceeb');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Sol
+            ctx.fillStyle = '#fff5e0';
+            ctx.beginPath();
+            ctx.arc(300, 80, 50, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffd700';
+            ctx.beginPath();
+            ctx.arc(300, 80, 40, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Partenón
+            ctx.fillStyle = '#e8dcc8';
+            // Base
+            ctx.fillRect(90, 160, 200, 15);
+            ctx.fillRect(100, 175, 180, 10);
+            // Columnas
+            for (let i = 0; i < 6; i++) {
+                ctx.fillRect(110 + i * 32, 90, 18, 85);
+                // Capitel
+                ctx.fillRect(107 + i * 32, 85, 24, 8);
+            }
+            // Techo triangular
+            ctx.fillStyle = '#d4c4a8';
+            ctx.beginPath();
+            ctx.moveTo(80, 85);
+            ctx.lineTo(190, 30);
+            ctx.lineTo(300, 85);
+            ctx.closePath();
+            ctx.fill();
+            // Decoración del frontón
+            ctx.fillStyle = '#c4b498';
+            ctx.beginPath();
+            ctx.moveTo(100, 85);
+            ctx.lineTo(190, 45);
+            ctx.lineTo(280, 85);
+            ctx.closePath();
+            ctx.fill();
+
+            // Suelo
+            ctx.fillStyle = '#d4a574';
+            ctx.fillRect(0, 185, canvas.width, 95);
+
+            // Familia (6 personajes simplificados)
+            const familyColors = ['#4a90d9', '#d94a8a', '#4ad97a', '#d9d94a', '#d94ad9', '#4ad9d9'];
+            const familyHeights = [55, 50, 45, 42, 38, 35];
+
+            for (let i = 0; i < 6; i++) {
+                const fx = 60 + i * 50;
+                const fy = 230 - familyHeights[i];
+
+                // Cuerpo
+                ctx.fillStyle = familyColors[i];
+                ctx.fillRect(fx - 8, fy, 16, familyHeights[i] * 0.6);
+
+                // Cabeza
+                ctx.fillStyle = '#fcd9b6';
+                ctx.beginPath();
+                ctx.arc(fx, fy - 8, 10, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Pelo
+                ctx.fillStyle = i === 0 ? '#3d2314' : '#2a1a0a';
+                ctx.beginPath();
+                ctx.arc(fx, fy - 12, 9, Math.PI, 0, false);
+                ctx.fill();
+
+                // Barba para Papá
+                if (i === 0) {
+                    ctx.fillStyle = '#3d2314';
+                    ctx.beginPath();
+                    ctx.arc(fx, fy - 2, 6, 0, Math.PI);
+                    ctx.fill();
                 }
+
+                // Piernas
+                ctx.fillStyle = '#1e3a5f';
+                ctx.fillRect(fx - 6, fy + familyHeights[i] * 0.6, 5, familyHeights[i] * 0.4);
+                ctx.fillRect(fx + 1, fy + familyHeights[i] * 0.6, 5, familyHeights[i] * 0.4);
+            }
+
+            // Minotauro enemigo
+            ctx.fillStyle = '#8b4513';
+            ctx.fillRect(340, 175, 30, 40);
+            ctx.beginPath();
+            ctx.arc(355, 165, 18, 0, Math.PI * 2);
+            ctx.fill();
+            // Cuernos
+            ctx.fillStyle = '#f5f5dc';
+            ctx.beginPath();
+            ctx.moveTo(340, 155);
+            ctx.quadraticCurveTo(325, 135, 335, 125);
+            ctx.quadraticCurveTo(345, 140, 345, 155);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(370, 155);
+            ctx.quadraticCurveTo(385, 135, 375, 125);
+            ctx.quadraticCurveTo(365, 140, 365, 155);
+            ctx.fill();
+            // Ojos rojos
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(347, 160, 5, 5);
+            ctx.fillRect(358, 160, 5, 5);
+
+            // Tesoro brillante
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.4)';
+            ctx.beginPath();
+            ctx.arc(190, 140, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffd700';
+            ctx.font = '30px Arial';
+            ctx.fillText('💎', 175, 150);
+
+            // Título
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(0, 235, canvas.width, 45);
+            ctx.fillStyle = '#ffd700';
+            ctx.font = 'bold 14px "Press Start 2P", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('TESORO EN LA', canvas.width/2, 255);
+            ctx.fillStyle = '#fff';
+            ctx.fillText('ACRÓPOLIS', canvas.width/2, 273);
+        }
+
+        // ===== PORTADA 3: Leo vs Reyes Magos =====
+        function drawCover3() {
+            const canvas = document.getElementById('cover3');
+            const ctx = canvas.getContext('2d');
+
+            // Fondo azul oscuro estilo Pacman
+            ctx.fillStyle = '#000022';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Laberinto simplificado
+            ctx.strokeStyle = '#1a4a1a';
+            ctx.lineWidth = 4;
+
+            // Muros del laberinto
+            const walls = [
+                [20, 20, 340, 20], [20, 20, 20, 100], [340, 20, 340, 100],
+                [60, 60, 120, 60], [160, 60, 220, 60], [260, 60, 320, 60],
+                [60, 60, 60, 100], [120, 60, 120, 100], [260, 60, 260, 100], [320, 60, 320, 100],
+                [20, 140, 80, 140], [120, 140, 260, 140], [300, 140, 360, 140],
+                [160, 100, 220, 100], [160, 100, 160, 140], [220, 100, 220, 140]
+            ];
+
+            walls.forEach(w => {
+                ctx.beginPath();
+                ctx.moveTo(w[0], w[1]);
+                ctx.lineTo(w[2], w[3]);
+                ctx.stroke();
             });
-        }, observerOptions);
 
-        document.querySelectorAll('.reveal').forEach(el => {
-            observer.observe(el);
-        });
+            // Luces navideñas en el laberinto
+            const colors = ['#ff0000', '#ffd700', '#00ff00', '#ff00ff'];
+            for (let i = 0; i < 15; i++) {
+                ctx.fillStyle = colors[i % 4];
+                ctx.beginPath();
+                ctx.arc(30 + i * 22, 20, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
 
-        // Init Counter
-        // Init (No dynamic counter needed)
-
-
-        // Form submission
-        // Form submission with Server API
-        async function handleSubmit(e) {
-            e.preventDefault();
-            const emailInput = document.getElementById('email-input');
-            const email = emailInput.value;
-            const button = e.target.querySelector('button');
-            const originalText = button.textContent;
-
-            if (!email) return;
-
-            button.disabled = true;
-            button.textContent = 'Guardando...';
-
-            const IS_STATIC = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-
-            if (!IS_STATIC) {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
-
-                try {
-                    const response = await fetch('http://localhost:3000/api/register', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: email }),
-                        signal: controller.signal
-                    });
-                    clearTimeout(timeoutId);
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        // Update counter with server truth
-                        const total = 1250 + data.count;
-                        const counter = document.getElementById('counter');
-                        if (counter) counter.textContent = total.toLocaleString('es-ES');
-
-                        showSuccess();
-                        return;
+            // Regalos (puntos)
+            ctx.fillStyle = '#ffd700';
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 5; j++) {
+                    if (Math.random() > 0.3) {
+                        ctx.beginPath();
+                        ctx.arc(50 + i * 40, 40 + j * 35, 4, 0, Math.PI * 2);
+                        ctx.fill();
                     }
-                } catch (error) {
-                    clearTimeout(timeoutId);
-                    console.log('Server not available (or timeout), falling back to local storage');
-                    // Continue to local storage fallback below
                 }
             }
 
-            // Fallback: LocalStorage (Simulated Success for Static/Offline)
-            const list = JSON.parse(localStorage.getItem(CONFIG.LIST_KEY) || '[]');
-            if (!list.find(item => item.email === email)) {
-                list.push({ email: email, date: new Date().toISOString() });
-                localStorage.setItem(CONFIG.LIST_KEY, JSON.stringify(list));
-            }
+            // Leo (Pacman)
+            const time = Date.now() / 200;
+            const mouthAngle = Math.abs(Math.sin(time)) * 0.5;
 
-            // FORCE SEND (Debug Mode): Send even if already registered
-            sendConfirmationEmail(email);
+            ctx.fillStyle = '#fcd34d';
+            ctx.beginPath();
+            ctx.arc(100, 110, 22, mouthAngle + 0.2, Math.PI * 2 - mouthAngle - 0.2);
+            ctx.lineTo(100, 110);
+            ctx.closePath();
+            ctx.fill();
 
-            showSuccess();
+            // Ojo de Leo
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(105, 98, 4, 0, Math.PI * 2);
+            ctx.fill();
 
-            function showSuccess() {
-                button.textContent = '✓ ¡Apuntado!';
-                button.style.background = '#2a7d4e';
+            // Pelo de Leo
+            ctx.fillStyle = '#78350f';
+            ctx.beginPath();
+            ctx.arc(100, 95, 10, Math.PI, 0, false);
+            ctx.fill();
 
-                setTimeout(() => {
-                    emailInput.value = '';
-                    button.textContent = originalText;
-                    button.style.background = '';
-                    button.disabled = false;
-                }, 3000);
-            }
-        }
+            // Los 3 Reyes Magos (fantasmas)
+            const kingsData = [
+                { x: 220, y: 90, color: '#ff6b6b', name: 'M' },
+                { x: 270, y: 110, color: '#4ecdc4', name: 'G' },
+                { x: 320, y: 90, color: '#ffe66d', name: 'B' }
+            ];
 
-        // CSV Export Function
-        function downloadCSV() {
-            const IS_STATIC = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+            kingsData.forEach((king, i) => {
+                const wobble = Math.sin(time + i) * 3;
 
-            if (!IS_STATIC) {
-                // Try server first
-                const link = document.createElement("a");
-                link.href = "http://localhost:3000/waiting_list.csv";
-                link.download = "caronte_waiting_list.csv";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else {
-                // Client-side generation (GitHub Pages)
-                const list = JSON.parse(localStorage.getItem(CONFIG.LIST_KEY) || '[]');
-                if (list.length === 0) {
-                    alert('No hay registros locales para exportar.');
-                    return;
+                // Cuerpo fantasma
+                ctx.fillStyle = king.color;
+                ctx.beginPath();
+                ctx.arc(king.x, king.y - 5 + wobble, 18, Math.PI, 0, false);
+                ctx.lineTo(king.x + 18, king.y + 15 + wobble);
+                for (let j = 0; j < 6; j++) {
+                    ctx.lineTo(king.x + 18 - j * 6, king.y + (j % 2 ? 15 : 20) + wobble);
                 }
+                ctx.closePath();
+                ctx.fill();
 
-                const csvContent = "data:text/csv;charset=utf-8,"
-                    + "Email,Date\n"
-                    + list.map(e => `${e.email},${e.date}`).join("\n");
+                // Corona
+                ctx.fillStyle = '#ffd700';
+                ctx.beginPath();
+                ctx.moveTo(king.x - 12, king.y - 20 + wobble);
+                ctx.lineTo(king.x - 8, king.y - 12 + wobble);
+                ctx.lineTo(king.x, king.y - 18 + wobble);
+                ctx.lineTo(king.x + 8, king.y - 12 + wobble);
+                ctx.lineTo(king.x + 12, king.y - 20 + wobble);
+                ctx.lineTo(king.x + 12, king.y - 12 + wobble);
+                ctx.lineTo(king.x - 12, king.y - 12 + wobble);
+                ctx.closePath();
+                ctx.fill();
 
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", "caronte_local_list.csv");
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        }
+                // Ojos
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.ellipse(king.x - 6, king.y - 3 + wobble, 5, 6, 0, 0, Math.PI * 2);
+                ctx.ellipse(king.x + 6, king.y - 3 + wobble, 5, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
 
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(king.x - 4, king.y - 2 + wobble, 2, 0, Math.PI * 2);
+                ctx.arc(king.x + 8, king.y - 2 + wobble, 2, 0, Math.PI * 2);
+                ctx.fill();
             });
-        });
+
+            // Carbón (power pellet)
+            ctx.fillStyle = '#333';
+            ctx.beginPath();
+            ctx.arc(50, 170, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'rgba(255, 100, 100, 0.6)';
+            ctx.beginPath();
+            ctx.arc(46, 166, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Roscón de Reyes
+            ctx.fillStyle = '#d4a574';
+            ctx.beginPath();
+            ctx.ellipse(320, 170, 20, 12, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#000022';
+            ctx.beginPath();
+            ctx.ellipse(320, 170, 8, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            // Frutas
+            ctx.fillStyle = '#ff0000';
+            ctx.beginPath();
+            ctx.arc(310, 165, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#00ff00';
+            ctx.beginPath();
+            ctx.arc(330, 168, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Estrella de Belén
+            ctx.fillStyle = '#ffd700';
+            ctx.font = '20px Arial';
+            ctx.fillText('⭐', 175, 55);
+
+            // Título
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+            ctx.fillRect(0, 200, canvas.width, 80);
+
+            ctx.fillStyle = '#ff6b6b';
+            ctx.font = 'bold 18px "Press Start 2P", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('LEO VS', canvas.width/2, 230);
+            ctx.fillStyle = '#ffd700';
+            ctx.fillText('REYES MAGOS', canvas.width/2, 255);
+            ctx.fillStyle = '#4ecdc4';
+            ctx.font = '10px "Press Start 2P", monospace';
+            ctx.fillText('👑 PACMAN STYLE 👑', canvas.width/2, 273);
+        }
+
+        // ===== PORTADA 4: Leo Racing =====
+        function drawCover4() {
+            const canvas = document.getElementById('cover4');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            // Cielo degradado
+            const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height/2);
+            skyGradient.addColorStop(0, '#0066cc');
+            skyGradient.addColorStop(1, '#87ceeb');
+            ctx.fillStyle = skyGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height/2);
+
+            // Sol
+            ctx.fillStyle = '#ffdd00';
+            ctx.beginPath();
+            ctx.arc(320, 50, 30, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Montañas
+            ctx.fillStyle = '#4a6741';
+            ctx.beginPath();
+            ctx.moveTo(0, 140);
+            ctx.lineTo(80, 80);
+            ctx.lineTo(150, 120);
+            ctx.lineTo(220, 70);
+            ctx.lineTo(300, 110);
+            ctx.lineTo(380, 90);
+            ctx.lineTo(380, 140);
+            ctx.closePath();
+            ctx.fill();
+
+            // Carretera (perspectiva)
+            const roadGradient = ctx.createLinearGradient(0, 140, 0, 280);
+            roadGradient.addColorStop(0, '#555');
+            roadGradient.addColorStop(1, '#333');
+
+            // Hierba
+            ctx.fillStyle = '#228b22';
+            ctx.fillRect(0, 140, canvas.width, 140);
+
+            // Carretera con perspectiva
+            ctx.fillStyle = roadGradient;
+            ctx.beginPath();
+            ctx.moveTo(140, 140);
+            ctx.lineTo(240, 140);
+            ctx.lineTo(380, 280);
+            ctx.lineTo(0, 280);
+            ctx.closePath();
+            ctx.fill();
+
+            // Líneas de carretera
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([20, 15]);
+            ctx.beginPath();
+            ctx.moveTo(190, 140);
+            ctx.lineTo(190, 280);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Bordes de carretera (rumbel strips)
+            for (let i = 0; i < 7; i++) {
+                const y = 145 + i * 20;
+                const width = 5 + i * 2;
+                const leftX = 140 - i * 20;
+                const rightX = 240 + i * 20;
+
+                ctx.fillStyle = i % 2 === 0 ? '#ff0000' : '#fff';
+                ctx.fillRect(leftX - width, y, width, 18);
+                ctx.fillRect(rightX, y, width, 18);
+            }
+
+            // Coche del jugador (abajo, grande)
+            const carX = 170;
+            const carY = 200;
+
+            // Sombra
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+            ctx.ellipse(carX + 20, carY + 60, 35, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cuerpo del coche
+            ctx.fillStyle = '#ff3300';
+            ctx.beginPath();
+            ctx.moveTo(carX, carY + 50);
+            ctx.lineTo(carX + 40, carY + 50);
+            ctx.lineTo(carX + 35, carY + 20);
+            ctx.lineTo(carX + 5, carY + 20);
+            ctx.closePath();
+            ctx.fill();
+
+            // Techo
+            ctx.fillStyle = '#cc2200';
+            ctx.beginPath();
+            ctx.moveTo(carX + 8, carY + 20);
+            ctx.lineTo(carX + 32, carY + 20);
+            ctx.lineTo(carX + 28, carY + 5);
+            ctx.lineTo(carX + 12, carY + 5);
+            ctx.closePath();
+            ctx.fill();
+
+            // Ventana
+            ctx.fillStyle = '#333';
+            ctx.fillRect(carX + 10, carY + 8, 20, 10);
+
+            // Ruedas
+            ctx.fillStyle = '#111';
+            ctx.fillRect(carX - 5, carY + 35, 10, 18);
+            ctx.fillRect(carX + 35, carY + 35, 10, 18);
+
+            // Coches rivales (más pequeños, arriba)
+            const rivals = [
+                { x: 160, y: 150, color: '#0000ff', scale: 0.4 },
+                { x: 220, y: 155, color: '#00ff00', scale: 0.35 }
+            ];
+
+            rivals.forEach(r => {
+                ctx.fillStyle = r.color;
+                ctx.fillRect(r.x, r.y, 20 * r.scale, 15 * r.scale);
+                ctx.fillStyle = '#111';
+                ctx.fillRect(r.x - 2, r.y + 8 * r.scale, 4 * r.scale, 8 * r.scale);
+                ctx.fillRect(r.x + 18 * r.scale, r.y + 8 * r.scale, 4 * r.scale, 8 * r.scale);
+            });
+
+            // Título
+            ctx.fillStyle = '#ff6600';
+            ctx.font = 'bold 28px "Press Start 2P", monospace';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = '#000';
+            ctx.shadowBlur = 5;
+            ctx.shadowOffsetX = 3;
+            ctx.shadowOffsetY = 3;
+            ctx.fillText('LEO', canvas.width/2, 35);
+
+            ctx.fillStyle = '#ffcc00';
+            ctx.font = 'bold 22px "Press Start 2P", monospace';
+            ctx.fillText('RACING', canvas.width/2, 65);
+            ctx.shadowBlur = 0;
+
+            // Badge
+            ctx.fillStyle = '#fff';
+            ctx.font = '10px "Press Start 2P", monospace';
+            ctx.fillText('🏎️ ARCADE 1998 🏁', canvas.width/2, 270);
+        }
+
+        // Dibujar portadas
+        drawCover1();
+        drawCover2();
+        drawCover3();
+        drawCover4();
+
+        // Redibujar periódicamente para animación sutil
+        setInterval(() => {
+            drawCover1();
+            drawCover3();
+        }, 100);
     </script>
 </body>
-
 </html>
