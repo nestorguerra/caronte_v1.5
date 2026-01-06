@@ -1133,8 +1133,8 @@
                     const horizon = HEIGHT / 2;
                     const screenY = horizon + (HEIGHT - horizon - 80) * scale;
 
-                    // Tamaño del coche - MUCHO MÁS GRANDE
-                    const carScale = Math.max(0.15, Math.min(scale * 2.5, 1.4));
+                    // Tamaño del coche - 20% más pequeño
+                    const carScale = Math.max(0.12, Math.min(scale * 2.0, 1.1));
 
                     // Dibujar si está en pantalla
                     if (screenX > -100 && screenX < WIDTH + 100 && screenY > horizon - 50) {
