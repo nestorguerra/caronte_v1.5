@@ -935,27 +935,33 @@
                 // IA mejorada: seguir la carretera con trayectorias diferentes
                 const segment = findSegment(car.z);
 
-                // Cada coche tiende hacia su trayectoria preferida
+                // Cada coche tiende FUERTEMENTE hacia su trayectoria preferida
                 const targetX = car.preferredX;
                 const xDiff = targetX - car.x;
 
-                // Moverse gradualmente hacia su línea preferida
-                car.x += xDiff * 0.02 * car.aggression;
+                // Moverse con fuerza hacia su línea preferida (más agresivo)
+                car.x += xDiff * 0.08;
 
                 // Reaccionar a las curvas según su estilo
                 if (car.style === 'inside') {
                     // JORGE: toma las curvas por dentro, corta más
-                    car.x -= segment.curve * 0.015 * car.aggression;
+                    car.x -= segment.curve * 0.012 * car.aggression;
                 } else if (car.style === 'outside') {
                     // ALEX: toma las curvas por fuera, más amplio
-                    car.x -= segment.curve * 0.005 * car.aggression;
+                    car.x -= segment.curve * 0.003 * car.aggression;
                 } else {
                     // ISA: línea central, equilibrado
-                    car.x -= segment.curve * 0.01 * car.aggression;
+                    car.x -= segment.curve * 0.008 * car.aggression;
                 }
 
-                // Límites de la pista (un poco más amplios para trayectorias diferentes)
-                car.x = Math.max(-0.7, Math.min(0.7, car.x));
+                // Límites de la pista según su línea preferida
+                if (car.style === 'inside') {
+                    car.x = Math.max(-0.6, Math.min(-0.15, car.x));  // JORGE: siempre a la izquierda
+                } else if (car.style === 'outside') {
+                    car.x = Math.max(0.15, Math.min(0.6, car.x));    // ALEX: siempre a la derecha
+                } else {
+                    car.x = Math.max(-0.15, Math.min(0.15, car.x));  // ISA: siempre en el centro
+                }
 
                 // Distancia al jugador (positivo = delante, negativo = detrás)
                 let distToPlayer = car.z - player.z;
