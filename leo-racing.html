@@ -381,8 +381,8 @@
             // Todos parten DELANTE del jugador para que se vean
             for (let i = 0; i < 3; i++) {
                 cars.push({
-                    z: 800 + (i * 150),  // Delante del jugador, escalonados
-                    x: -0.4 + (i * 0.4),  // Lado a lado: -0.4, 0, 0.4
+                    z: 500 + (i * 200),  // Muy cerca del jugador: 500, 700, 900
+                    x: -0.35 + (i * 0.35),  // Lado a lado
                     speed: 0,  // Todos empiezan parados
                     targetSpeed: 210 + Math.random() * 20,  // Velocidades similares
                     color: carData[i].color,
@@ -1110,20 +1110,38 @@
 
                     drawSprite(sprite, spriteScale * 3000, spriteX, segment.p1.screen.y, maxY);
                 });
-
-                // Coches rivales
-                cars.forEach(car => {
-                    const carSegment = Math.floor(car.z / SEGMENT_LENGTH);
-                    if (carSegment === segmentIndex) {
-                        const percent = (car.z % SEGMENT_LENGTH) / SEGMENT_LENGTH;
-                        const carScale = segment.p1.screen.scale;
-                        const carX = segment.p1.screen.x + (carScale * car.x * ROAD_WIDTH * WIDTH / 2);
-                        const carY = segment.p1.screen.y;
-
-                        drawCar(carX, carY, carScale * 40, car.color, false, car.name);
-                    }
-                });
             }
+
+            // DIBUJAR COCHES RIVALES - Método mejorado
+            // Ordenar coches por distancia (los más lejanos primero)
+            const sortedCars = [...cars].sort((a, b) => b.z - a.z);
+
+            sortedCars.forEach(car => {
+                // Calcular distancia del coche al jugador
+                let carZ = car.z - player.z;
+
+                // Ajustar si el coche dio la vuelta
+                if (carZ < -trackLength / 2) carZ += trackLength;
+                if (carZ > trackLength / 2) carZ -= trackLength;
+
+                // Solo dibujar coches que están DELANTE y dentro del rango visible
+                if (carZ > 0 && carZ < DRAW_DISTANCE * SEGMENT_LENGTH * 0.5) {
+                    // Encontrar el segmento donde está el coche
+                    const carSegmentIndex = Math.floor(car.z / SEGMENT_LENGTH) % segments.length;
+                    const segment = segments[carSegmentIndex];
+
+                    // Proyectar la posición del coche
+                    const scale = CAMERA_DEPTH / carZ;
+                    const screenX = WIDTH / 2 + (scale * (car.x - player.x) * ROAD_WIDTH * WIDTH / 2);
+                    const screenY = HEIGHT / 2 - (scale * (segment.p1.world.y - playerY - CAMERA_HEIGHT) * HEIGHT / 2);
+                    const screenScale = scale * 40;
+
+                    // Solo dibujar si está en pantalla
+                    if (screenX > -100 && screenX < WIDTH + 100 && screenY > 0 && screenY < HEIGHT) {
+                        drawCar(screenX, screenY, screenScale, car.color, false, car.name);
+                    }
+                }
+            });
 
             // Dibujar coche del jugador
             drawCar(WIDTH / 2, HEIGHT - 20, 1.2, '#ff3300', true);
