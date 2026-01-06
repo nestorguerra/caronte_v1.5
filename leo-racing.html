@@ -175,7 +175,7 @@
             </div>
             <div class="hud-item">
                 <div>POSICION</div>
-                <div class="position-display"><span id="position">1</span>/9</div>
+                <div class="position-display"><span id="position">1</span>/4</div>
             </div>
         </div>
 
@@ -190,7 +190,7 @@
 
             <div style="color: #fff; font-size: 10px; margin: 20px 0;">
                 <div style="color: #ffff00;">CIRCUITO: COSTA DEL SOL</div>
-                <div style="margin-top: 10px;">3 VUELTAS - 9 COCHES</div>
+                <div style="margin-top: 10px;">3 VUELTAS - LEO vs JORGE, ALEX, ISA</div>
             </div>
 
             <button class="btn" onclick="startRace()">EMPEZAR CARRERA</button>
@@ -369,42 +369,26 @@
             }
         }
 
-        // Crear coches rivales (8 coches con nombres de amigos)
+        // Crear coches rivales (3 amigos: Alex, Jorge, Isa)
         function createCars() {
             cars = [];
             const carData = [
                 { color: '#ff0000', name: 'JORGE' },
                 { color: '#0000ff', name: 'ALEX' },
-                { color: '#00ff00', name: 'ISA' },
-                { color: '#ffff00', name: 'MANUEL' },
-                { color: '#ff00ff', name: 'JUAN' },
-                { color: '#00ffff', name: 'CARLOS' },
-                { color: '#ff8800', name: 'PABLO' },
-                { color: '#8800ff', name: 'LUCIA' }
+                { color: '#00ff00', name: 'ISA' }
             ];
 
-            // Todos parten del podium/parrilla de salida
-            const startPositions = [
-                { z: 100, x: -0.4 },   // Fila 1
-                { z: 100, x: 0.4 },
-                { z: 250, x: -0.4 },   // Fila 2
-                { z: 250, x: 0.4 },
-                { z: 400, x: -0.4 },   // Fila 3
-                { z: 400, x: 0.4 },
-                { z: 550, x: -0.4 },   // Fila 4
-                { z: 550, x: 0.4 }
-            ];
-
-            for (let i = 0; i < 8; i++) {
+            // Todos parten del mismo punto (parrilla de salida juntos)
+            for (let i = 0; i < 3; i++) {
                 cars.push({
-                    z: startPositions[i].z,
-                    x: startPositions[i].x,
+                    z: 50,  // Todos en la misma línea de salida
+                    x: -0.5 + (i * 0.5),  // Lado a lado: -0.5, 0, 0.5
                     speed: 0,  // Todos empiezan parados
-                    targetSpeed: 200 + Math.random() * 35,  // Velocidad objetivo diferente
+                    targetSpeed: 195 + Math.random() * 25,  // Velocidades similares para competir
                     color: carData[i].color,
                     name: carData[i].name,
                     passed: false,
-                    aggression: 0.8 + Math.random() * 0.4  // Agresividad de cada piloto
+                    aggression: 0.9 + Math.random() * 0.2  // Todos bastante agresivos
                 });
             }
         }
@@ -923,12 +907,12 @@
             }
         }
 
-        // Actualizar coches rivales (IA competitiva)
+        // Actualizar coches rivales (IA competitiva - siempre cerca para ver adelantamientos)
         function updateCars(dt) {
             cars.forEach(car => {
                 // Acelerar hacia velocidad objetivo (simula salida)
                 if (car.speed < car.targetSpeed) {
-                    car.speed += 0.5 * car.aggression * dt * 60;
+                    car.speed += 0.6 * car.aggression * dt * 60;
                 }
 
                 // Mover
@@ -942,24 +926,46 @@
                 // IA mejorada: seguir la carretera y competir
                 const segment = findSegment(car.z);
 
-                // Contravolante en curvas (más agresivo = mejor piloto)
-                car.x -= segment.curve * 0.015 * car.aggression;
-                car.x = Math.max(-0.7, Math.min(0.7, car.x));
+                // Contravolante en curvas
+                car.x -= segment.curve * 0.012 * car.aggression;
+                car.x = Math.max(-0.6, Math.min(0.6, car.x));
 
-                // Variar velocidad aleatoriamente (simula errores y adelantamientos)
-                if (Math.random() > 0.98) {
-                    car.targetSpeed = 190 + Math.random() * 45;
+                // Variar velocidad para crear adelantamientos
+                if (Math.random() > 0.97) {
+                    car.targetSpeed = 200 + Math.random() * 30;
                 }
 
-                // Boost ocasional (como si usaran turbo)
-                if (Math.random() > 0.995) {
-                    car.speed = Math.min(car.speed + 20, 250);
+                // Distancia al jugador
+                let distToPlayer = car.z - player.z;
+
+                // Ajustar por vuelta completa
+                if (distToPlayer > trackLength / 2) distToPlayer -= trackLength;
+                if (distToPlayer < -trackLength / 2) distToPlayer += trackLength;
+
+                // IA que mantiene la carrera reñida
+                if (distToPlayer > 2000) {
+                    // Muy adelante - frenar un poco para que sea competitivo
+                    car.speed *= 0.995;
+                } else if (distToPlayer < -2000) {
+                    // Muy atrás - acelerar para alcanzar
+                    car.speed = Math.min(car.speed + 0.5 * dt * 60, 250);
+                } else if (distToPlayer < 0 && distToPlayer > -500) {
+                    // Justo detrás del jugador - intentar adelantar!
+                    car.speed = Math.min(car.speed + 0.4 * dt * 60, 245);
                 }
 
-                // Si están cerca del jugador, intentan adelantar
-                const distToPlayer = Math.abs(car.z - player.z);
-                if (distToPlayer < 500 && car.z < player.z) {
-                    car.speed = Math.min(car.speed + 0.3 * dt * 60, 240);
+                // Boost ocasional
+                if (Math.random() > 0.99) {
+                    car.speed = Math.min(car.speed + 15, 250);
+                }
+
+                // Moverse lateralmente para adelantar
+                if (Math.abs(distToPlayer) < 300) {
+                    // Cerca del jugador - buscar hueco para adelantar
+                    if (car.x > player.x - 0.3 && car.x < player.x + 0.3) {
+                        // En el mismo carril - moverse al lado
+                        car.x += (car.x > player.x ? 0.02 : -0.02);
+                    }
                 }
             });
 
