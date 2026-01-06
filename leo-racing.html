@@ -378,17 +378,17 @@
                 { color: '#00ff00', name: 'ISA' }
             ];
 
-            // Todos parten del mismo punto (parrilla de salida juntos)
+            // Todos parten DELANTE del jugador para que se vean
             for (let i = 0; i < 3; i++) {
                 cars.push({
-                    z: 50,  // Todos en la misma línea de salida
-                    x: -0.5 + (i * 0.5),  // Lado a lado: -0.5, 0, 0.5
+                    z: 800 + (i * 150),  // Delante del jugador, escalonados
+                    x: -0.4 + (i * 0.4),  // Lado a lado: -0.4, 0, 0.4
                     speed: 0,  // Todos empiezan parados
-                    targetSpeed: 195 + Math.random() * 25,  // Velocidades similares para competir
+                    targetSpeed: 210 + Math.random() * 20,  // Velocidades similares
                     color: carData[i].color,
                     name: carData[i].name,
                     passed: false,
-                    aggression: 0.9 + Math.random() * 0.2  // Todos bastante agresivos
+                    aggression: 0.95 + Math.random() * 0.1
                 });
             }
         }
@@ -907,12 +907,12 @@
             }
         }
 
-        // Actualizar coches rivales (IA competitiva - siempre cerca para ver adelantamientos)
+        // Actualizar coches rivales (IA competitiva - SIEMPRE VISIBLES)
         function updateCars(dt) {
             cars.forEach(car => {
-                // Acelerar hacia velocidad objetivo (simula salida)
+                // Acelerar hacia velocidad objetivo
                 if (car.speed < car.targetSpeed) {
-                    car.speed += 0.6 * car.aggression * dt * 60;
+                    car.speed += 0.5 * car.aggression * dt * 60;
                 }
 
                 // Mover
@@ -923,48 +923,50 @@
                     car.z -= trackLength;
                 }
 
-                // IA mejorada: seguir la carretera y competir
+                // IA mejorada: seguir la carretera
                 const segment = findSegment(car.z);
+                car.x -= segment.curve * 0.01 * car.aggression;
+                car.x = Math.max(-0.5, Math.min(0.5, car.x));
 
-                // Contravolante en curvas
-                car.x -= segment.curve * 0.012 * car.aggression;
-                car.x = Math.max(-0.6, Math.min(0.6, car.x));
-
-                // Variar velocidad para crear adelantamientos
-                if (Math.random() > 0.97) {
-                    car.targetSpeed = 200 + Math.random() * 30;
-                }
-
-                // Distancia al jugador
+                // Distancia al jugador (positivo = delante, negativo = detrás)
                 let distToPlayer = car.z - player.z;
 
                 // Ajustar por vuelta completa
                 if (distToPlayer > trackLength / 2) distToPlayer -= trackLength;
                 if (distToPlayer < -trackLength / 2) distToPlayer += trackLength;
 
-                // IA que mantiene la carrera reñida
-                if (distToPlayer > 2000) {
-                    // Muy adelante - frenar un poco para que sea competitivo
+                // *** IA QUE MANTIENE COCHES SIEMPRE VISIBLES ***
+                if (distToPlayer > 3000) {
+                    // Muy adelante - FRENAR MUCHO para que te alcancen
+                    car.speed *= 0.98;
+                    car.targetSpeed = 180;
+                } else if (distToPlayer > 1500) {
+                    // Adelante pero visible - frenar un poco
                     car.speed *= 0.995;
-                } else if (distToPlayer < -2000) {
-                    // Muy atrás - acelerar para alcanzar
+                } else if (distToPlayer < -1500) {
+                    // Muy atrás - acelerar mucho para alcanzar
+                    car.speed = Math.min(car.speed + 1 * dt * 60, 260);
+                    car.targetSpeed = 240;
+                } else if (distToPlayer < -500) {
+                    // Detrás - acelerar para alcanzar
                     car.speed = Math.min(car.speed + 0.5 * dt * 60, 250);
-                } else if (distToPlayer < 0 && distToPlayer > -500) {
-                    // Justo detrás del jugador - intentar adelantar!
-                    car.speed = Math.min(car.speed + 0.4 * dt * 60, 245);
+                } else {
+                    // Cerca del jugador - competir!
+                    // Variar velocidad para adelantamientos
+                    if (Math.random() > 0.98) {
+                        car.targetSpeed = 205 + Math.random() * 25;
+                    }
                 }
 
-                // Boost ocasional
-                if (Math.random() > 0.99) {
-                    car.speed = Math.min(car.speed + 15, 250);
+                // Boost ocasional cuando están cerca
+                if (Math.abs(distToPlayer) < 1000 && Math.random() > 0.99) {
+                    car.speed = Math.min(car.speed + 10, 245);
                 }
 
                 // Moverse lateralmente para adelantar
-                if (Math.abs(distToPlayer) < 300) {
-                    // Cerca del jugador - buscar hueco para adelantar
-                    if (car.x > player.x - 0.3 && car.x < player.x + 0.3) {
-                        // En el mismo carril - moverse al lado
-                        car.x += (car.x > player.x ? 0.02 : -0.02);
+                if (Math.abs(distToPlayer) < 400) {
+                    if (Math.abs(car.x - player.x) < 0.3) {
+                        car.x += (car.x > player.x ? 0.015 : -0.015);
                     }
                 }
             });
