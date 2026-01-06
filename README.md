@@ -1,85 +1,86 @@
-# Caronte - Landing & Dashboard
+# 🎮 MIS JUEGOS PREFES 🎮
 
-Proyecto de landing page y dashboard para la experiencia literaria personalizada "Caronte".
+¡¡Hola!! Me llamo Leo y tengo 9 años. Esta es mi plataforma de juegos que hice con mi papa. Son los juegos mas chulos del mundo mundial y me encantan muchisimo!!!
 
-## 🚀 Cómo funciona
+## 🚗 LEO RACING
 
-Este proyecto está diseñado para funcionar en dos modos:
+Este es mi juego favorito!!! Es un juego de coches de carreras como los de las maquinitas antiguas. Yo soy el piloto y tengo un Ferrari rojo super chulo que va MUY rapido.
 
-1.  **Modo Completo (Local con Servidor):** Permite guardar los emails de la lista de espera en un archivo CSV real y tener un contador global sincronizado.
-2.  **Modo Estático (GitHub Pages / Demo):** Funciona perfectamente sin backend. La lista de espera se guarda en el navegador del usuario (`LocalStorage`) y el contador es una simulación basada en una cifra inicial (1.250) + registros locales.
+**Como se juega:**
+- Con las flechas ⬅️ ➡️ giras el coche
+- Con la flecha ⬆️ aceleras a tope
+- Con la flecha ⬇️ frenas (pero yo nunca freno jeje)
+- Con ESPACIO usas el TURBO 🔥🔥🔥
 
----
+**Los otros coches:**
+- **JORGE** - Es el coche rojo y siempre va por la izquierda
+- **ALEX** - Es el coche azul y siempre va por la derecha
+- **ISA** - Es el coche verde y va por el medio
 
-## 🛠️ Instalación y Uso (Modo Completo)
+Tienes que hacer 3 vueltas y ganarles a todos!! El circuito se llama Costa del Sol y tiene curvas muy dificiles pero yo ya me las se todas 😎
 
-Si quieres ejecutar el servidor para guardar los emails en un CSV real:
+## 👑 LEO VS LOS REYES MAGOS
 
-1.  Asegúrate de tener [Node.js](https://nodejs.org/) instalado.
-2.  Abre la terminal en la carpeta del proyecto.
-3.  Ejecuta el servidor:
-    ```bash
-    node caronte-landing/server.js
-    ```
-    *(Si estás en la raíz, ajusta la ruta según corresponda).*
+Este juego es super divertido!! Los Reyes Magos estan tirando regalos desde el cielo y yo tengo que cogerlos todos con mi saco magico.
 
-4.  Abre `http://localhost:3000` en tu navegador.
+**Como se juega:**
+- Te mueves con las flechas ⬅️ ➡️
+- Tienes que coger los regalos que caen
+- Cuidado con las cosas malas que tambien caen!!
+- Cuantos mas regalos coges mas puntos tienes
 
----
+Es muy chulo porque es de Navidad y salen Melchor, Gaspar y Baltasar que son mis favoritos!!
 
-## 🌐 Despliegue en GitHub Pages (Modo Estático)
+## ⛏️ LEO MINECRAFT ADVENTURE
 
-Simplemente sube la carpeta `caronte-landing` (o el contenido de la misma) a tu repositorio y activa GitHub Pages.
-El proyecto detectará automáticamente que no está en `localhost` y activará el **Modo Estático**:
+Este juego es como Minecraft pero en 2D!! Puedes explorar, romper bloques y construir cosas. A mi me encanta Minecraft y por eso mi papa me ayudo a hacer este.
 
-*   **Lista de Espera:** Los emails se guardan en el navegador del visitante.
-*   **Contador:** Muestra una cifra estática (+35.000) para transmitir autoridad sin depender de APIs externas.
-*   **Sin Errores:** No verás alertas de conexión al servidor.
+**Como se juega:**
+- Te mueves con las flechas
+- Rompes bloques haciendo clic
+- Puedes construir cosas super chulas
+- Hay zombies y esqueletos pero no dan mucho miedo
 
----
+## 🏛️ ACROPOLIS TREASURE HUNT
 
-## 🔑 Credenciales de Acceso
+Este es un juego de aventuras en Grecia antigua!! Tienes que buscar tesoros por toda la Acropolis que es un sitio muy antiguo con columnas muy grandes.
 
-Para probar el dashboard (`login.html`), utiliza estos usuarios preconfigurados:
+**Como se juega:**
+- Exploras el mapa buscando tesoros
+- Tienes que resolver puzzles
+- Hay trampas y enemigos
+- Al final encuentras el tesoro mas grande!!
 
-| Usuario | Email | Contraseña | Rol |
-| :--- | :--- | :--- | :--- |
-| **Demo User** | `demo@caronte.com` | `futuro2026` | Usuario estándar (Genera portada automática) |
-| **Néstor Guerra** | `nestor.guerra@gmail.com` | `caronte2026` | **VIP** (Descarga archivos PDF/ePub reales) |
-
----
-
-## 📧 Configuración de Email (Confirmación)
-
-Para que los correos de confirmación se envíen realmente:
-
-1.  Crea una cuenta gratuita en [EmailJS.com](https://www.emailjs.com/).
-2.  **Add Service > Gmail** (o tu proveedor). Llámalo `service_caronte`.
-3.  **Add Template > Create New Template**.
-    *   Llámalo `template_caronte`.
-    *   Copia el código de `email-template.html` y pégalo en la pestaña "Fuente" (Source) del editor.
-4.  **Integration**:
-    *   Ve a *Account > API Keys*.
-    *   Copia tu "Public Key".
-5.  **En `index.html`**:
-    *   Busca `emailjs.init("YOUR_PUBLIC_KEY")` y pega tu clave.
-    *   Verifica que `SERVICE_ID` y `TEMPLATE_ID` coincidan con lo que creaste.
+Mi papa me conto que la Acropolis esta en Atenas y que es muy muy vieja, de hace miles de años!
 
 ---
 
-## 📂 Archivos Importantes
+## 💻 Como jugar
 
-*   `index.html`: Landing page principal.
-*   `dashboard.html`: Área privada (perfil, entrevista, descarga).
-*   `server.js`: Servidor Node.js (opcional para persistencia).
-*   `waiting_list.csv`: Archivo donde se guardan los emails (solo modo servidor).
-*   `caronte.pdf` / `caronte.epub`: Archivos del libro real (descargables solo por el usuario VIP).
+Es muy facil!! Solo tienes que:
+
+1. Abrir el archivo `juegos.html` en el navegador
+2. Elegir el juego que quieras
+3. JUGAR Y PASARTELO BIEN!! 🎉
+
+## 📁 Los archivos
+
+| Archivo | Que es |
+|---------|--------|
+| `juegos.html` | La plataforma donde eliges el juego |
+| `leo-racing.html` | El juego de coches |
+| `leo-vs-reyes-magos.html` | El juego de los Reyes Magos |
+| `leo-minecraft-adventure.html` | El juego tipo Minecraft |
+| `acropolis-treasure-hunt.html` | El juego de buscar tesoros |
+
+## 🙏 Agradecimientos
+
+**GRACIAS PAPA** por ayudarme a hacer estos juegos tan chulos!! Eres el mejor papa del mundo!! ❤️
+
+Tambien gracias a mis amigos Jorge, Alex e Isa por salir en el juego de coches!!
 
 ---
 
-## ✨ Características
+*2026 - Papa me ha ayudado con mucho ❤️*
 
-*   **Diseño Radical:** Estética oscura, premium y provocadora.
-*   **Entrevista:** 40 preguntas profundas divididas en 4 bloques temáticos.
-*   **Generación PDF/ePub:** Creación de archivos al vuelo en el navegador (JSZip/jsPDF).
-*   **Persistencia Local:** Todo el progreso del usuario se guarda en su navegador.
+**PD:** Si no te funcionan los juegos preguntale a un adulto que te ayude con el ordenador 😄
