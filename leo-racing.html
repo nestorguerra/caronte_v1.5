@@ -379,16 +379,25 @@
             ];
 
             // Todos parten DELANTE del jugador para que se vean
+            // Cada uno con su estilo de conducción diferente
+            const drivingStyles = [
+                { preferredX: -0.4, style: 'inside' },    // JORGE: prefiere interior
+                { preferredX: 0.4, style: 'outside' },   // ALEX: prefiere exterior
+                { preferredX: 0, style: 'center' }       // ISA: prefiere centro
+            ];
+
             for (let i = 0; i < 3; i++) {
                 cars.push({
                     z: 200 + (i * 80),  // MUY cerca: 200, 280, 360
-                    x: -0.4 + (i * 0.4),  // Lado a lado: -0.4, 0, 0.4
+                    x: drivingStyles[i].preferredX,
                     speed: 0,  // Todos empiezan parados
-                    targetSpeed: 220 + Math.random() * 10,
+                    targetSpeed: 215 + Math.random() * 15,
                     color: carData[i].color,
                     name: carData[i].name,
                     passed: false,
-                    aggression: 0.95 + Math.random() * 0.1
+                    aggression: 0.9 + Math.random() * 0.2,
+                    preferredX: drivingStyles[i].preferredX,  // Trayectoria preferida
+                    style: drivingStyles[i].style
                 });
             }
         }
@@ -923,10 +932,30 @@
                     car.z -= trackLength;
                 }
 
-                // IA mejorada: seguir la carretera
+                // IA mejorada: seguir la carretera con trayectorias diferentes
                 const segment = findSegment(car.z);
-                car.x -= segment.curve * 0.01 * car.aggression;
-                car.x = Math.max(-0.5, Math.min(0.5, car.x));
+
+                // Cada coche tiende hacia su trayectoria preferida
+                const targetX = car.preferredX;
+                const xDiff = targetX - car.x;
+
+                // Moverse gradualmente hacia su línea preferida
+                car.x += xDiff * 0.02 * car.aggression;
+
+                // Reaccionar a las curvas según su estilo
+                if (car.style === 'inside') {
+                    // JORGE: toma las curvas por dentro, corta más
+                    car.x -= segment.curve * 0.015 * car.aggression;
+                } else if (car.style === 'outside') {
+                    // ALEX: toma las curvas por fuera, más amplio
+                    car.x -= segment.curve * 0.005 * car.aggression;
+                } else {
+                    // ISA: línea central, equilibrado
+                    car.x -= segment.curve * 0.01 * car.aggression;
+                }
+
+                // Límites de la pista (un poco más amplios para trayectorias diferentes)
+                car.x = Math.max(-0.7, Math.min(0.7, car.x));
 
                 // Distancia al jugador (positivo = delante, negativo = detrás)
                 let distToPlayer = car.z - player.z;
