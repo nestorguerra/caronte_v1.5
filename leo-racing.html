@@ -381,10 +381,10 @@
             // Todos parten DELANTE del jugador para que se vean
             for (let i = 0; i < 3; i++) {
                 cars.push({
-                    z: 300 + (i * 100),  // MUY cerca: 300, 400, 500
-                    x: -0.3 + (i * 0.3),  // Lado a lado: -0.3, 0, 0.3
+                    z: 200 + (i * 80),  // MUY cerca: 200, 280, 360
+                    x: -0.4 + (i * 0.4),  // Lado a lado: -0.4, 0, 0.4
                     speed: 0,  // Todos empiezan parados
-                    targetSpeed: 215 + Math.random() * 15,
+                    targetSpeed: 220 + Math.random() * 10,
                     color: carData[i].color,
                     name: carData[i].name,
                     passed: false,
@@ -1112,7 +1112,7 @@
                 });
             }
 
-            // DIBUJAR COCHES RIVALES - Método simple y directo
+            // DIBUJAR COCHES RIVALES - Método corregido
             cars.forEach(car => {
                 // Calcular distancia del coche al jugador
                 let carZ = car.z - player.z;
@@ -1121,17 +1121,24 @@
                 if (carZ < -trackLength / 2) carZ += trackLength;
                 if (carZ > trackLength / 2) carZ -= trackLength;
 
-                // Solo dibujar coches que están DELANTE (carZ > 100) y cerca (< 5000)
-                if (carZ > 100 && carZ < 5000) {
-                    // Proyección simple
-                    const scale = CAMERA_DEPTH / carZ;
-                    const screenX = WIDTH / 2 + (scale * (car.x - player.x) * ROAD_WIDTH * WIDTH / 2);
-                    const screenY = HEIGHT / 2 + (HEIGHT / 4) * (1 - scale * 8);
-                    const screenScale = scale * 50;
+                // Dibujar coches que están DELANTE y dentro del rango visible
+                if (carZ > 50 && carZ < 8000) {
+                    // Escala basada en distancia (más lejos = más pequeño)
+                    const scale = 1 / (carZ / 500);  // Escala simple
 
-                    // Dibujar si está en pantalla y tiene tamaño visible
-                    if (screenX > -200 && screenX < WIDTH + 200 && screenScale > 0.01) {
-                        drawCar(screenX, screenY, screenScale, car.color, false, car.name);
+                    // Posición X en pantalla
+                    const screenX = WIDTH / 2 + (car.x - player.x) * 800 * scale;
+
+                    // Posición Y en pantalla (en el horizonte cuando lejos, abajo cuando cerca)
+                    const horizon = HEIGHT / 2;
+                    const screenY = horizon + (HEIGHT - horizon - 100) * scale;
+
+                    // Tamaño del coche
+                    const carScale = Math.max(0.1, Math.min(scale * 1.5, 1.2));
+
+                    // Dibujar si está en pantalla
+                    if (screenX > -100 && screenX < WIDTH + 100 && screenY > horizon - 50) {
+                        drawCar(screenX, screenY, carScale, car.color, false, car.name);
                     }
                 }
             });
