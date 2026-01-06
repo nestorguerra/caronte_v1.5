@@ -1124,17 +1124,17 @@
                 // Dibujar coches que están DELANTE y dentro del rango visible
                 if (carZ > 50 && carZ < 8000) {
                     // Escala basada en distancia (más lejos = más pequeño)
-                    const scale = 1 / (carZ / 500);  // Escala simple
+                    const scale = 1 / (carZ / 800);  // Escala más grande
 
                     // Posición X en pantalla
-                    const screenX = WIDTH / 2 + (car.x - player.x) * 800 * scale;
+                    const screenX = WIDTH / 2 + (car.x - player.x) * 900 * scale;
 
                     // Posición Y en pantalla (en el horizonte cuando lejos, abajo cuando cerca)
                     const horizon = HEIGHT / 2;
-                    const screenY = horizon + (HEIGHT - horizon - 100) * scale;
+                    const screenY = horizon + (HEIGHT - horizon - 80) * scale;
 
-                    // Tamaño del coche
-                    const carScale = Math.max(0.1, Math.min(scale * 1.5, 1.2));
+                    // Tamaño del coche - MUCHO MÁS GRANDE
+                    const carScale = Math.max(0.15, Math.min(scale * 2.5, 1.4));
 
                     // Dibujar si está en pantalla
                     if (screenX > -100 && screenX < WIDTH + 100 && screenY > horizon - 50) {
